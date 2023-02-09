@@ -47,8 +47,6 @@ class settings
             mysqli_select_db($this->DBLink, MYSQL_DATENBANK);
         }
 
-        $this->CreateTable();
-
         $sql = "SELECT * FROM Einstellungen";
         $query = mysqli_query($this->DBLink, $sql);
 
@@ -101,46 +99,6 @@ class settings
                 echo mysqli_error($this->DBLink);
             }
         }
-    }
-
-    private function CreateTable()
-    {
-        $sql = "CREATE TABLE IF NOT EXISTS Einstellungen (
-            id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            Benutzername VARCHAR(100) NOT NULL DEFAULT '',
-            Passwort VARCHAR(100) NOT NULL DEFAULT '',
-            Firma VARCHAR(100) NOT NULL DEFAULT '',
-            Ansprechpartner VARCHAR(100) NOT NULL DEFAULT '',
-            StrasseNr VARCHAR(100) NOT NULL DEFAULT '',
-            PLZ VARCHAR(10) NOT NULL DEFAULT '',
-            Ort VARCHAR(100) NOT NULL DEFAULT '',
-            Land VARCHAR(100) NOT NULL DEFAULT '',
-            Telefon VARCHAR(100) NOT NULL DEFAULT '',
-            Mobil VARCHAR(100) NOT NULL DEFAULT '',
-            Email VARCHAR(100) NOT NULL DEFAULT '',
-            Internet VARCHAR(100) NOT NULL DEFAULT '',
-            SteuerNr VARCHAR(100) NOT NULL DEFAULT '',
-            SteuerId VARCHAR(100) NOT NULL DEFAULT '',
-            Kontoinhaber VARCHAR(100) NOT NULL DEFAULT '',
-            BankName VARCHAR(100) NOT NULL DEFAULT '',
-            IBAN VARCHAR(100) NOT NULL DEFAULT '',
-            BIC VARCHAR(100) NOT NULL DEFAULT '',
-            TitelRechnung VARCHAR(100) NOT NULL DEFAULT '',
-            TitelGutschrift VARCHAR(100) NOT NULL DEFAULT '',
-            TextRechnung TEXT NOT NULL DEFAULT '',
-            TextGutschrift TEXT NOT NULL DEFAULT '',
-            MailBetreff VARCHAR(100) NOT NULL DEFAULT '',
-            MailRechnung TEXT NOT NULL DEFAULT '',
-            MailGutschrift TEXT NOT NULL DEFAULT '',
-            Steuersatz INT(11) NOT NULL DEFAULT 0
-            ) DEFAULT CHARSET=utf8";
-        $query = mysqli_query($this->DBLink, $sql);
-        if (!$query) {
-            echo mysqli_error($this->DBLink);
-            return false;
-        }
-
-        return true;
     }
 
     private function SetData($Userdata)

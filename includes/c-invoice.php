@@ -71,47 +71,6 @@ class invoice
         $this->BankName = $mySettings->BankName;
         $this->IBAN = $mySettings->IBAN;
         $this->BIC = $mySettings->BIC;
-
-        $this->CreateTable();
-    }
-
-    private function CreateTable()
-    {
-        $sql = "CREATE TABLE IF NOT EXISTS Rechnungen (
-            id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            AdressenId int(11) NOT NULL DEFAULT 0
-            RechnungsNr VARCHAR(10) NOT NULL DEFAULT '',
-            RechnungsDatum INT(17) NOT NULL DEFAULT 0,
-            SteuerNr VARCHAR(100) NOT NULL DEFAULT '',
-            SteuerID VARCHAR(100) NOT NULL DEFAULT '',
-            Steuersatz INT(11) NOT NULL DEFAULT 0,
-            AbsFirma VARCHAR(100) NOT NULL DEFAULT '',
-            AbsName VARCHAR(100) NOT NULL DEFAULT '',
-            AbsStrasseNr VARCHAR(100) NOT NULL DEFAULT '',
-            AbsPLZOrt VARCHAR(100) NOT NULL DEFAULT '',
-            AbsTelefon VARCHAR(100) NOT NULL DEFAULT '',
-            AbsMobil VARCHAR(100) NOT NULL DEFAULT '',
-            AbsInternet VARCHAR(100) NOT NULL DEFAULT '',
-            AbsEmail VARCHAR(100) NOT NULL DEFAULT '',
-            KunFirma VARCHAR(100) NOT NULL DEFAULT '',
-            KunName VARCHAR(100) NOT NULL DEFAULT '',
-            KunStrasseNr VARCHAR(100) NOT NULL DEFAULT '',
-            KunPLZOrt VARCHAR(100) NOT NULL DEFAULT '',
-            KunLand VARCHAR(100) NOT NULL DEFAULT '',
-            Ueberschrift VARCHAR(100) NOT NULL DEFAULT '',
-            Freitext TEXT NOT NULL DEFAULT '',
-            Kontoinhaber VARCHAR(100) NOT NULL DEFAULT '',
-            BankName VARCHAR(100) NOT NULL DEFAULT '',
-            IBAN VARCHAR(100) NOT NULL DEFAULT '',
-            BIC VARCHAR(100) NOT NULL DEFAULT ''
-            ) DEFAULT CHARSET=utf8";
-        $query = mysqli_query($this->DBLink, $sql);
-        if (!$query) {
-            echo mysqli_error($this->DBLink);
-            return false;
-        }
-
-        return true;
     }
 
     function Load($RechnungsId)

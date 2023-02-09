@@ -19,25 +19,6 @@ class account
             mysqli_set_charset($this->DBLink, 'utf8');
             mysqli_select_db($this->DBLink, MYSQL_DATENBANK);
         }
-
-        $this->CreateTable();
-    }
-
-    private function CreateTable()
-    {
-        $sql = "CREATE TABLE IF NOT EXISTS Konten (
-            id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            KontoNr VARCHAR(100) NOT NULL DEFAULT '',
-            Bezeichnung VARCHAR(100) NOT NULL DEFAULT '',
-            ProzentAbsetzbar INT(11) NOT NULL DEFAULT 100
-            ) DEFAULT CHARSET=utf8";
-        $query = mysqli_query($this->DBLink, $sql);
-        if (!$query) {
-            echo mysqli_error($this->DBLink);
-            return false;
-        }
-
-        return true;
     }
 
     function Load($AccountId) {

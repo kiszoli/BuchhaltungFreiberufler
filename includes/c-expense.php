@@ -22,28 +22,7 @@ class expense
             mysqli_select_db($this->DBLink, MYSQL_DATENBANK);
         }
 
-        $this->CreateTable();
-
         $this->Datum = time();
-    }
-
-    private function CreateTable()
-    {
-        $sql = "CREATE TABLE IF NOT EXISTS Einstellungen (
-            id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            Datum INT(17) NOT NULL DEFAULT 0,
-            Bezeichnung VARCHAR(100) NOT NULL DEFAULT '',
-            Brutto DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-            MwSt INT(11) NOT NULL DEFAULT 0,
-            KontoId INT(11) NOT NULL DEFAULT 0
-            ) DEFAULT CHARSET=utf8";
-        $query = mysqli_query($this->DBLink, $sql);
-        if (!$query) {
-            echo mysqli_error($this->DBLink);
-            return false;
-        }
-
-        return true;
     }
 
     function Load($ExpenseId) {

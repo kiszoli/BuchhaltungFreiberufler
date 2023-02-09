@@ -27,33 +27,6 @@ class address
             mysqli_set_charset($this->DBLink, 'utf8');
             mysqli_select_db($this->DBLink, MYSQL_DATENBANK);
         }
-
-        $this->CreateTable();
-    }
-
-    private function CreateTable()
-    {
-        $sql = "CREATE TABLE IF NOT EXISTS Adressen (
-            id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            Firma VARCHAR(100) NOT NULL DEFAULT '',
-            Ansprechpartner VARCHAR(100) NOT NULL DEFAULT '',
-            StrasseNr VARCHAR(100) NOT NULL DEFAULT '',
-            PLZ VARCHAR(10) NOT NULL DEFAULT '',
-            Ort VARCHAR(100) NOT NULL DEFAULT '',
-            Land VARCHAR(100) NOT NULL DEFAULT '',
-            Telefon VARCHAR(100) NOT NULL DEFAULT '',
-            Mobil VARCHAR(100) NOT NULL DEFAULT '',
-            Email VARCHAR(100) NOT NULL DEFAULT '',
-            Homepage VARCHAR(100) NOT NULL DEFAULT '',
-            Notiz TEXT NOT NULL DEFAULT ''
-            ) DEFAULT CHARSET=utf8";
-        $query = mysqli_query($this->DBLink, $sql);
-        if (!$query) {
-            echo mysqli_error($this->DBLink);
-            return false;
-        }
-
-        return true;
     }
 
     function Load($AdressenId)

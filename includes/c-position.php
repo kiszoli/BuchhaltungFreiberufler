@@ -20,26 +20,6 @@ class position {
             mysqli_select_db($this->DBLink, MYSQL_DATENBANK);
         }
 
-        $this->CreateTable();
-    }
-
-    private function CreateTable()
-    {
-        $sql = "CREATE TABLE IF NOT EXISTS Rechnungspositionen (
-            id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            RechnungsId int(11) NOT NULL DEFAULT 0,
-            Menge int(11) NOT NULL DEFAULT 1,
-            Einheit VARCHAR(100) NOT NULL DEFAULT '',
-            Bezeichnung VARCHAR(100) NOT NULL DEFAULT '',
-            Nettobetrag DECIMAL(10,2) NOT NULL DEFAULT 0.00
-            ) DEFAULT CHARSET=utf8";
-        $query = mysqli_query($this->DBLink, $sql);
-        if (!$query) {
-            echo mysqli_error($this->DBLink);
-            return false;
-        }
-
-        return true;
     }
 
     function Load($PositionId){
