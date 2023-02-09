@@ -1,0 +1,361 @@
+html {
+	background-color: #ddd
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+	line-height: 1.4em;
+	color: #444;
+	padding: 0;
+	margin: 0;
+}
+
+#menu {
+	width: auto;
+	padding: 10px;
+	margin: 0;
+	background-color: #01e591;
+}
+
+#menu .logo,
+.bilanzjahr,
+.navigation {
+	display: block;
+
+}
+
+#menu img {
+	margin: 0 5px;
+}
+
+.logo {
+	width: 180px;
+	float: left;
+}
+
+.bilanzjahr {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	float: left;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.navigation {
+	float: right;
+}
+
+#wrapper {
+	margin: 20px;
+	display: block;
+}
+
+.loginfield {
+	margin: 40px auto;
+	padding: 20px;
+	width: 220px;
+	background-color: #fff;
+	border-radius: 5px;
+	border: solid 1px #ccc;
+	text-align: center;
+}
+
+h1,
+h2,
+h3 {
+	text-align: center;
+}
+
+a:hover,
+a:visited,
+a:link,
+a:active {
+	text-decoration: none;
+	color: #04AA6D;
+}
+
+a:hover {
+	color: #4CAF50;
+}
+
+/* Tables */
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+td,
+th,
+caption {
+	padding: 8px;
+}
+
+caption {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.tout thead th:nth-child(1) {
+	width: 1px;
+}
+
+.tout thead th:nth-child(2) {
+	width: 90px;
+}
+
+.tout thead th:nth-child(3) {
+	width: 190px;
+}
+
+/* 
+.tout thead th:nth-child(4) {
+	width: 30%;
+}
+ */
+.tout thead th:nth-child(5) {
+	width: 65px;
+}
+
+.tout thead th:nth-child(6) {
+	width: 45px;
+}
+
+.tout thead th:nth-child(7) {
+	width: 65px;
+}
+
+.tout thead th:nth-child(8) {
+	width: 80px;
+}
+
+th {
+	background-color: #04AA6D;
+	color: white;
+	text-align: left;
+}
+
+tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+.tright {
+	text-align: right;
+}
+
+.tleft {
+	text-align: left;
+}
+
+/* Form Layout */
+.formblock {
+	max-width: 600px;
+	margin: 0 auto;
+}
+.listentry {
+	width: 100%;
+	padding: 0;
+	display: inline-block;
+}
+
+.fullcolumn, .halfcolumn, .thirdcolumn, .fourthcolumn, .twothirdcolumn {
+	display: block;
+	float: left;
+	padding-right: 2px;
+}
+
+.fullcolumn {
+	width: 598px;
+}
+
+.halfcolumn {
+	width: 298px;
+}
+
+.thirdcolumn {
+	width: 198px;
+}
+
+.fourthcolumn {
+	width: 148px;
+}
+
+.twothirdcolumn {
+	width: 398px;
+}
+
+/* Form Text */
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=number],
+input[type=date],
+textarea,
+select {
+	width: 100%;
+	padding: 8px 10px;
+	margin: 8px 0;
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+input[type=submit] {
+	width: 100%;
+	background-color: #04AA6D;
+	color: white;
+	padding: 8px 20px;
+	margin: 8px 0;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+input[type=submit]:hover {
+	background-color: #4CAF50;
+}
+
+/* Form Checkbox / Radio Button */
+/* The container */
+.container {
+	display: block;
+	position: relative;
+	padding-left: 25px;
+	margin-bottom: 8px;
+	cursor: pointer;
+	/* font-size: 12px; */
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/* Hide the browser's default radio button / checkbox */
+.container input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark,
+.radiobtn {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 16px;
+	width: 16px;
+	background-color: #eee;
+}
+
+.radiobtn {
+	border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input~.checkmark,
+.container:hover input~.radiobtn {
+	background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a green background */
+.container input:checked~.checkmark,
+.container input:checked~.radiobtn {
+	background-color: #4CAF50;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after,
+.radiobtn:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked~.checkmark:after,
+.container input:checked~.radiobtn:after {
+	display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+	left: 6px;
+	top: 4px;
+	width: 2px;
+	height: 5px;
+	border: solid white;
+	border-width: 0 2px 2px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+/* Style the Radio Button indicator (dot/circle) */
+.container .radiobtn:after {
+	top: 6px;
+	left: 6px;
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background: white;
+}
+
+/* Accordion Menu */
+.accordion {
+	background-color: #eee;
+	cursor: pointer;
+	padding: 10px;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+	font-size: 1em;
+	font-weight: bold;
+	transition: 0.4s;
+}
+
+.active,
+.accordion:hover {
+	background-color: #ccc;
+}
+
+.panel {
+	padding: 0 10px;
+	background-color: white;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.2s ease-out;
+}
+
+.accordionitem {
+	width: 100%;
+	padding: 3px 0;
+	height: 20px;
+}
+
+.leftalign {
+	text-align: left;
+	display: block;
+	float: left;
+}
+
+.rightalign {
+	text-align: right;
+	display: block;
+	float: right;
+}
+
+.clearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
