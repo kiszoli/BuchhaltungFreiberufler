@@ -30,6 +30,7 @@ if (isset($_GET['bilanzdelta'])) $_SESSION['bilanzjahr'] = $_SESSION['bilanzjahr
 			<a href="rechnungen.php"> | Einnahmen</a>
 			<a href="ausgaben.php"> | Ausgaben</a>
 			<a href="adressen.php"> | Adressen</a>
+			<a href="kontenrahmen.php"> | Kontenrahmen</a>
 			<a href="einstellungen.php"> | Einstellungen</a>
 			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout=true"> | Logout</a>
 		</div>
