@@ -47,6 +47,18 @@ body {
 	float: right;
 }
 
+.navigation a:hover,
+.navigation a:visited,
+.navigation a:active,
+.navigation a:link {
+	color: white;
+	font-size: 1.4em;
+}
+
+.navigation a:hover {
+	color: #4CAF50;
+}
+
 #wrapper {
 	margin: 20px;
 	display: block;

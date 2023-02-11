@@ -66,12 +66,12 @@ if (isset($_GET['kuerzel'])) $Kuerzel = $_GET['kuerzel'];
 			<?php echo '<a href="' . $_SERVER['PHP_SELF'] . '?bilanzdelta=-1"><img src="images/arrow-left.png"></a>' . $_SESSION['bilanzjahr'] . '<a href="' . $_SERVER['PHP_SELF'] . '?bilanzdelta=+1"><img src="images/arrow-right.png"></a>'; ?>
 		</div>
 		<div class="navigation">
-			<a href="index.php"><img src="images/home.png" alt="Home"></a>
-			<a href="rechnungen.php"><img src="images/einnahmen.png" alt="Rechnungen"></a>
-			<a href="ausgaben.php"><img src="images/ausgaben.png" alt="Ausgaben"></a>
-			<a href="adressen.php"><img src="images/addressbook.png" alt="Adressbuch"></a>
-			<a href="einstellungen.php"><img src="images/settings.png" alt="Einstellungen"></a>
-			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout=true"><img src="images/logout.png" alt="Logout"></a>
+			<a href="index.php">EÜR</a>
+			<a href="rechnungen.php"> | Einnahmen</a>
+			<a href="ausgaben.php"> | Ausgaben</a>
+			<a href="adressen.php"> | Adressen</a>
+			<a href="einstellungen.php"> | Einstellungen</a>
+			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout=true"> | Logout</a>
 		</div>
 		<div class="clearfix"></div>
 	</div>

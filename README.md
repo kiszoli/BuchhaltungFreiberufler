@@ -8,8 +8,7 @@ Mit dieser Anwendung werden
 - Rechnungen erstellt, als PDF gespeichert und gedruckt
 - Ausgaben erfasst
 - Kundenadressen verwaltet
-- Eine einfache EÜR erstellt
-- Jährliche EÜR
+- Eine einfache jährliche EÜR erstellt
 
 Geplant ist
 - Rechnungen / Gutschriften per Mail verschicken
