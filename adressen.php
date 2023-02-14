@@ -2,7 +2,7 @@
 ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 
-require_once("includes/c-addresses.php");
+require_once("includes/c-address.php");
 
 session_start();
 if (isset($_GET['logout'])) $_SESSION['userId'] = 0;
@@ -15,7 +15,7 @@ $AddressId = -1;
 if (isset($_GET['updateaddress'])) $AddressId = $_GET['updateaddress'];
 if (isset($_POST['AddressId'])) $AddressId = $_POST['AddressId'];
 
-$Adressen = new addresses();
+$Adressen = new address();
 if (isset($_POST['cancel'])) $AddressId = -1;
 if (isset($_POST['delete'])) {
 	$AddressId = $Adressen->Delete($AddressId);

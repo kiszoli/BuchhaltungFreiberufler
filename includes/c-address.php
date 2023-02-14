@@ -134,4 +134,99 @@ class address
         }
         return -1;
     }
+
+    function GetAddressList()
+    {
+        $sql = "SELECT Adressen.id, Adressen.Firma, Adressen.Ansprechpartner, Sum(Rechnungspositionen.Nettobetrag) AS Umsatz";
+        $sql .= " FROM (Adressen LEFT JOIN Rechnungen ON Adressen.id = Rechnungen.AdressenId) LEFT JOIN Rechnungspositionen ON Rechnungen.id = Rechnungspositionen.RechnungsId";
+        $sql .= " GROUP BY Adressen.id, Adressen.Firma, Adressen.Ansprechpartner ORDER BY Adressen.Firma";
+        $query = mysqli_query($this->DBLink, $sql);
+
+        $myTable = '<div class="smallcontent">';
+        if (!$query) {
+            echo mysqli_error($this->DBLink);
+        } else {
+            $myTable .= '<table>' . PHP_EOL;
+            $myTable .= '<thead>' . PHP_EOL;
+            $myTable .= '<th style="width:380px">Firma / Kunde</th>' . PHP_EOL;
+            $myTable .= '<th>Umsatz</th>' . PHP_EOL;
+            $myTable .= '<th>&nbsp;</th>' . PHP_EOL;
+            $myTable .= '</thead>' . PHP_EOL;
+            $myTable .= '<tbody>' . PHP_EOL;
+            while ($datarow = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
+                $myTable .= '<tr>' . PHP_EOL;
+                $myTable .= '<td><input type="hidden" name ="userdata[id]" value="' . $datarow['id'] . '"><a href="' . $_SERVER['PHP_SELF'] . '?updateaddress=' . $datarow['id'] . '">' . $datarow['Firma'];
+                if (strlen($datarow['Ansprechpartner']) > 1) $myTable .= ' - ' . $datarow['Ansprechpartner'];
+                $myTable .= '</a></td>' . PHP_EOL;
+                $myTable .= '<td class="tright">' . number_format($datarow['Umsatz'], 2, ',', '.') . '</td>';
+                $myTable .= '<td class="tright"><a href="rechnungen.php?insertinvoice=' . $datarow['id'] . '">Rechnung</a>' . PHP_EOL;
+                $myTable .= '<a href="rechnungen.php?insertinvoice=' . $datarow['id'] . '&kuerzel=G">Gutschrift</a></td>' . PHP_EOL;
+                $myTable .= '</tr>' . PHP_EOL;
+            }
+            $myTable .= '</tbody>' . PHP_EOL;
+            $myTable .= '</table>' . PHP_EOL;
+            $myTable .= '<p><a href="adressen.php?updateaddress=0">Kunden anlegen</a></p>';
+        }
+        $myTable .= '</div>';
+        return $myTable;
+    }
+
+    function GetAddressForm($AddressId)
+    {
+        if ($AddressId > 0) $this->Load($AddressId);
+        $myForm = '<div class="formblock">' . PHP_EOL;
+
+        $myForm .= '<form action="' . $_SERVER['PHP_SELF'] . '" method="post" enctype="application/x-www-form-urlencoded">' . PHP_EOL;
+
+        $myForm .= '<input type="hidden" name="AddressId" value="' . $this->id . '" />' . PHP_EOL;
+
+        $myForm .= '<div class="listentry">' . PHP_EOL;
+        $myForm .= '<div class="fullcolumn"><input type="text" name="userdata[Firma]" placeholder="Firma" value="' . $this->Firma . '" /></div>' . PHP_EOL;
+        $myForm .= '</div>' . PHP_EOL;
+
+        $myForm .= '<div class="listentry">' . PHP_EOL;
+        $myForm .= '<div class="fullcolumn"><input type="text" name="userdata[Ansprechpartner]" placeholder="Ansprechpartner" value="' . $this->Ansprechpartner . '" /></div>' . PHP_EOL;
+        $myForm .= '</div>' . PHP_EOL;
+
+        $myForm .= '<div class="listentry">' . PHP_EOL;
+        $myForm .= '<div class="halfcolumn"><input type="text" name="userdata[StrasseNr]" placeholder="Strasse, Nr" value="' . $this->StrasseNr . '" /></div>' . PHP_EOL;
+        $myForm .= '</div>' . PHP_EOL;
+
+        $myForm .= '<div class="listentry">' . PHP_EOL;
+        $myForm .= '<div class="fourthcolumn"><input type="text" name="userdata[PLZ]" placeholder="PLZ" value="' . $this->PLZ . '" /></div>' . PHP_EOL;
+        $myForm .= '<div class="halfcolumn"><input type="text" name="userdata[Ort]" placeholder="Ort" value="' . $this->Ort . '" /></div>' . PHP_EOL;
+        $myForm .= '</div>' . PHP_EOL;
+
+        $myForm .= '<div class="listentry">' . PHP_EOL;
+        $myForm .= '<div class="halfcolumn"><input type="text" name="userdata[Land]" placeholder="Land" value="' . $this->Land . '" /></div>' . PHP_EOL;
+        $myForm .= '</div>' . PHP_EOL;
+
+        $myForm .= '<div class="listentry">' . PHP_EOL;
+        $myForm .= '<div class="halfcolumn"><input type="text" name="userdata[Telefon]" placeholder="Telefon" value="' . $this->Telefon . '" /></div>' . PHP_EOL;
+        $myForm .= '<div class="halfcolumn"><input type="text" name="userdata[Mobil]" placeholder="Mobil" value="' . $this->Mobil . '" /></div>' . PHP_EOL;
+        $myForm .= '</div>' . PHP_EOL;
+
+        $myForm .= '<div class="listentry">' . PHP_EOL;
+        $myForm .= '<div class="halfcolumn"><input type="email" name="userdata[Email]" placeholder="Email" value="' . $this->Email . '" /></div>' . PHP_EOL;
+        $myForm .= '<div class="halfcolumn"><input type="text" name="userdata[Homepage]" placeholder="Homepage" value="' . $this->Homepage . '" /></div>' . PHP_EOL;
+        $myForm .= '</div>' . PHP_EOL;
+
+        $myForm .= '<div class="listentry">' . PHP_EOL;
+        $myForm .= '<div class="fullcolumn"><textarea rows="4" cols="60" name="userdata[Notiz]" placeholder="Notiz">' . $this->Notiz . '</textarea></div>' . PHP_EOL;
+        $myForm .= '</div>' . PHP_EOL;
+
+        $myForm .= '<div class="listentry">' . PHP_EOL;
+        $myForm .= '<div class="fourthcolumn"><input type="submit" name="save" value="Save" /></div>' . PHP_EOL;
+        if ($AddressId > 0) {
+            $myForm .= '<div class="fourthcolumn"><input type="submit" name="delete" value="Delete" onclick="return confirm(\'Wirklich Löschen?\')"/></div>' . PHP_EOL;
+        }
+        $myForm .= '<div class="fourthcolumn"><input type="submit" name="cancel" value="Abbrechen" /></div>' . PHP_EOL;
+        $myForm .= '</div>' . PHP_EOL;
+
+        $myForm .= '</form>' . PHP_EOL;
+
+        $myForm .= '</div>' . PHP_EOL;
+
+        return $myForm;
+    }
 }
