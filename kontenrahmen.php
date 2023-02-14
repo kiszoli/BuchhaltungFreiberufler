@@ -2,12 +2,20 @@
 ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 
+require_once("includes/c-account.php");
+
 session_start();
 if (isset($_GET['logout'])) $_SESSION['userId'] = 0;
 if (!isset($_SESSION['userId']) || $_SESSION['userId'] < 1) header('Location: login.php');
 
 if (!isset($_SESSION['bilanzjahr'])) $_SESSION['bilanzjahr'] = date("Y");
 if (isset($_GET['bilanzdelta'])) $_SESSION['bilanzjahr'] = $_SESSION['bilanzjahr'] + $_GET['bilanzdelta'];
+
+$Konten = new account();
+$KontenId = 0;
+if (isset($_GET['update'])) $KontenId = $_GET['update'];
+if (isset($_GET['delete'])) $Konten->Delete($_GET['delete']);
+if (isset($_POST['save'])) $Konten->Save($_POST['userdata']);
 
 ?>
 <!doctype html>
@@ -40,6 +48,7 @@ if (isset($_GET['bilanzdelta'])) $_SESSION['bilanzjahr'] = $_SESSION['bilanzjahr
 
 	<div id="wrapper">
 		<h1>Konten</h1>
+		<?php echo $Konten->GetAccountList($KontenId); ?>
 	</div>
 	<div class="clearfix"></div>
 </body>

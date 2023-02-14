@@ -98,6 +98,11 @@ table {
 	width: 100%;
 }
 
+.smallcontent {
+	width: 620px;
+	margin: 0 auto;
+}
+
 td,
 th,
 caption {
