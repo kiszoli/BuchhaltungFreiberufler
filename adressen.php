@@ -56,10 +56,16 @@ if (isset($_POST['save'])) {
 	<div class="clearfix"></div>
 	<div id="wrapper">
 		<h1>Kunden</h1>
-		<?php 
-		if ($AddressId >= 0) echo $Adressen->GetAddressForm($AddressId); 
-		else echo $Adressen->GetAddressList();
+		<?php
+		if ($AddressId >= 0) echo $Adressen->GetAddressForm($AddressId);
+		else {
+			echo $Adressen->GetAddressList();
 		?>
+		<div class="smallcontent">
+			<hr>
+			<a href="adressen.php?updateaddress=0">Kunden anlegen</a>
+		</div>
+		<?php } ?>
 	</div>
 	<div class="clearfix"></div>
 </body>

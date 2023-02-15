@@ -41,9 +41,9 @@ if (isset($_GET['updateposition'])) {
 
 if (isset($_GET['printinvoice'])) $Income->PrintInvoice($_GET['printinvoice']);
 if (isset($_POST['saveinvoice'])) $Income->SaveInvoice($_POST['userdata']);
-if (isset($_POST['deleteinvoice'])) $Income->DeleteInvoice($_POST['deleteinvoice']);
+if (isset($_GET['deleteinvoice'])) $Income->DeleteInvoice($_GET['deleteinvoice']);
 if (isset($_POST['saveposition'])) $Income->SavePosition($_POST['userdata']);
-if (isset($_POST['deleteposition'])) $Income->DeletePosition($_POST['userdata']);
+if (isset($_GET['deleteposition'])) $Income->DeletePosition($_GET['deleteposition']);
 $Kuerzel = 'R';
 if (isset($_GET['kuerzel'])) $Kuerzel = $_GET['kuerzel'];
 
@@ -80,6 +80,8 @@ if (isset($_GET['kuerzel'])) $Kuerzel = $_GET['kuerzel'];
 	<div id="wrapper">
 		<h1>Einnahmen</h1>
 		<?php echo $Income->GetContent($ContentNo, $_SESSION['bilanzjahr'], $KundenId, $Kuerzel, $RechnungsId, $PositionId); ?>
+		<hr>
+		<a href="adressen.php">Rechnung / Gutschrift erstellen</a>
 		<script>
             var acc = document.getElementsByClassName("accordion");
             var i;

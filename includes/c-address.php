@@ -165,7 +165,6 @@ class address
             }
             $myTable .= '</tbody>' . PHP_EOL;
             $myTable .= '</table>' . PHP_EOL;
-            $myTable .= '<p><a href="adressen.php?updateaddress=0">Kunden anlegen</a></p>';
         }
         $myTable .= '</div>';
         return $myTable;

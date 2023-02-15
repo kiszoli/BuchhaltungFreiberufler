@@ -3,7 +3,7 @@ ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 
 require_once("includes/c-income.php");
-require_once("includes/c-expenses.php");
+require_once("includes/c-expense.php");
 
 session_start();
 if (isset($_GET['logout'])) $_SESSION['userId'] = 0;
@@ -13,7 +13,7 @@ if (!isset($_SESSION['bilanzjahr'])) $_SESSION['bilanzjahr'] = date("Y");
 if (isset($_GET['bilanzdelta'])) $_SESSION['bilanzjahr'] = $_SESSION['bilanzjahr'] + $_GET['bilanzdelta'];
 
 $myEinnahmen = new income();
-$myAusgaben = new expenses();
+$myAusgaben = new expense();
 
 ?>
 <!doctype html>

@@ -90,6 +90,7 @@ class income
 
                 if ($datarow['RechnungsId'] > 0) {
                     $myItem = '<div class="leftalign"><a href="' . $_SERVER['PHP_SELF'] . '?updateposition=' . $datarow['Rechnungspositionen_id'] . '">' . $datarow['Bezeichnung'] . '</a></div>';
+                    $myItem .= '<div class="rightalign"><a href="' . $_SERVER['PHP_SELF'] . '?deleteposition=' . $datarow['Rechnungspositionen_id'] . '"><img src="images/cross.png" onclick="return confirm(\'Are you sure you want to Remove?\');"></a></div>';
                     $myItem .= '<div class="rightalign">' . number_format($datarow['Nettobetrag'], 2, ',', '.') . '</div>';
                     $accordionItems[$datarow['Rechnungspositionen_id']] = $myItem;
                 }
@@ -205,7 +206,7 @@ class income
         $myForm .= '<td><input type="hidden" name="userdata[Rechnungspositionen_id]" value="' . $myPosition->id . '" />' . PHP_EOL;
         $myForm .= '<input type="hidden" name="userdata[RechnungsId]" value="' . $myPosition->RechnungsId . '" />' . PHP_EOL;
         $myForm .= '<td width="65"><input type="text" name="userdata[Menge]" placeholder="Menge" value="' . $myPosition->Menge . '" /></td>' . PHP_EOL;
-        $myForm .= '<td width="60"><input type="text" name="userdata[Einheit]" value="' . $myPosition->Einheit . '" /></td>' . PHP_EOL;
+        $myForm .= '<td width="60"><input type="text" name="userdata[Einheit]" placeholder="Einheit" value="' . $myPosition->Einheit . '" /></td>' . PHP_EOL;
         $myForm .= '<td><input type="text" name="userdata[Bezeichnung]" placeholder="Bezeichnung" value="' . $myPosition->Bezeichnung . '" /></td>' . PHP_EOL;
         $myForm .= '<td width="70"><input type="text" name="userdata[Nettobetrag]" placeholder="Netto" value="' . $myPosition->GetNetto() . '" /></td>' . PHP_EOL;
         $myForm .= '<td width="50"><input type="submit" name="saveposition" value="Save" /></td>' . PHP_EOL;
@@ -260,6 +261,7 @@ class income
 
     function DeletePosition($PositionId)
     {
-        //
+        $myPosition = new position();
+        $myPosition->Delete($PositionId);
     }
 }

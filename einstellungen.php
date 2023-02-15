@@ -78,8 +78,9 @@ if (isset($_POST['save'])) $Settings->Save($_POST['userdata']);
 					<div class="halfcolumn"><input type="text" name="userdata[SteuerId]" placeholder="Steuer-Id" value="<?php echo $Settings->SteuerId; ?>" /></div>
 				</div>
 				<div class="listentry">
-					<div class="fourthcolumn"><br>Steuersatz</div>
-					<div class="fourthcolumn"><input type="number" name="userdata[Steuersatz]" value="<?php echo $Settings->Steuersatz; ?>" /></div>
+					<div class="fourthcolumn">Steuersatz 0%</div>
+					<div class="fourthcolumn"><input type="hidden" name="userdata[Steuersatz]" value="<?php echo $Settings->Steuersatz; ?>" readonly/></div>
+					<div class="halfcolumn">umsatzsteuerbefreit nach § 19 Abs. 1 UStG</div>
 				</div>
 				<div class="listentry">
 					<div class="fullcolumn"><input type="text" name="userdata[Kontoinhaber]" placeholder="Kontoinhaber" value="<?php echo $Settings->Kontoinhaber; ?>" /></div>

@@ -49,7 +49,7 @@ class position {
         if (substr($res, -1) == '.') $res .= '00';
         if (substr($res, 0, 1) == '.') $res = '0' . $res;
     
-        return number_format($res, 2);
+        return number_format($res, 2, '.', '');
     }
 
     function GetNetto() {
@@ -78,7 +78,6 @@ class position {
         $sql .= "'" . $this->Einheit . "', ";
         $sql .= "'" . $this->Bezeichnung . "', ";
         $sql .= $this->Nettobetrag . ")";
-
         $query = mysqli_query($this->DBLink, $sql);
         if (!$query) {
             echo mysqli_error($this->DBLink);
@@ -109,5 +108,15 @@ class position {
         $this->SetData($Userdata);
         if ($PositionId > 0) $this->Update($PositionId);
         else $this->Insert();
+    }
+
+    function Delete($PositionId) {
+        $sql = "DELETE FROM Rechnungspositionen WHERE id = " . $PositionId;
+        $query = mysqli_query($this->DBLink, $sql);
+        if (!$query) {
+            echo mysqli_error($this->DBLink);
+            return $PositionId;
+        }
+        return -1;
     }
 }
