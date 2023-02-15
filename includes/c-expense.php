@@ -271,7 +271,7 @@ class expense
                     $myTable .= '<td class="tright">' . number_format($datarow['Brutto'] / (100 + $datarow['MwSt']) * 100, 2, ',', '.') . '</td>' . PHP_EOL;
                     $myTable .= '<td class="tright">' . $datarow['MwSt'] . '</td>' . PHP_EOL;
                     $myTable .= '<td class="tright">' . number_format($datarow['Brutto'], 2, ',', '.') . '</td>' . PHP_EOL;
-                    $myTable .= '<td class="tright"><a href="' . $_SERVER['PHP_SELF'] . '?delete=' . $datarow['id'] . '"> <img src="images/cross.png" alt="löschen"></a></td>' . PHP_EOL;
+                    $myTable .= '<td class="tright"><a href="' . $_SERVER['PHP_SELF'] . '?delete=' . $datarow['id'] . '"> <img src="images/trashbin.png" alt="löschen" onclick="return confirm(\'Are you sure you want to Remove?\');"></a></td>' . PHP_EOL;
                     $myTable .= '</tr>' . PHP_EOL;
                 }
             }

@@ -83,14 +83,14 @@ class income
                     $accordionItems = array();
                 }
                 $accordionHead = '<div class="leftalign">' . $datarow['RechnungsNr'] . '-' . date("d.m.Y", $datarow['RechnungsDatum']) . '-' . $datarow['KunFirma'] . '</div>';
-                $accordionHead .= '<div class="rightalign">&nbsp;<a href="' . $_SERVER['PHP_SELF'] . '?deleteinvoice=' . $datarow['Rechnungen_id'] . '" onclick="return confirm(\'Are you sure you want to Remove?\');"><img src="images/cross.png"></a></div>';
+                $accordionHead .= '<div class="rightalign">&nbsp;<a href="' . $_SERVER['PHP_SELF'] . '?deleteinvoice=' . $datarow['Rechnungen_id'] . '" onclick="return confirm(\'Are you sure you want to Remove?\');"><img src="images/trashbin.png"></a></div>';
                 $accordionHead .= '<div class="rightalign">&nbsp;<a href="' . $_SERVER['PHP_SELF'] . '?printinvoice=' . $datarow['Rechnungen_id'] . '" target="_blanc"><img src="images/print_tn.png"></a></div>';
                 $accordionHead .= '<div class="rightalign">&nbsp;<a href="' . $_SERVER['PHP_SELF'] . '?insertposition=' . $datarow['Rechnungen_id'] . '"><img src="images/plus.png"></a></div>';
                 $accordionHead .= '<div class="rightalign">&nbsp;<a href="' . $_SERVER['PHP_SELF'] . '?updateinvoice=' . $datarow['Rechnungen_id'] . '"><img src="images/pencil.png"></a></div>';
 
                 if ($datarow['RechnungsId'] > 0) {
                     $myItem = '<div class="leftalign"><a href="' . $_SERVER['PHP_SELF'] . '?updateposition=' . $datarow['Rechnungspositionen_id'] . '">' . $datarow['Bezeichnung'] . '</a></div>';
-                    $myItem .= '<div class="rightalign"><a href="' . $_SERVER['PHP_SELF'] . '?deleteposition=' . $datarow['Rechnungspositionen_id'] . '"><img src="images/cross.png" onclick="return confirm(\'Are you sure you want to Remove?\');"></a></div>';
+                    $myItem .= '<div class="rightalign"><a href="' . $_SERVER['PHP_SELF'] . '?deleteposition=' . $datarow['Rechnungspositionen_id'] . '"><img src="images/trashbin.png" onclick="return confirm(\'Are you sure you want to Remove?\');"></a></div>';
                     $myItem .= '<div class="rightalign">' . number_format($datarow['Nettobetrag'], 2, ',', '.') . '</div>';
                     $accordionItems[$datarow['Rechnungspositionen_id']] = $myItem;
                 }

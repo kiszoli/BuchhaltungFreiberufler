@@ -129,7 +129,7 @@ class account
                     $myTable .= '<td>' . $datarow['KontoNr'] . '</td>' . PHP_EOL;
                     $myTable .= '<td><a href="' . $_SERVER['PHP_SELF'] . '?update=' . $datarow['id'] . '">' . $datarow['Bezeichnung'] . '</a></td>' . PHP_EOL;
                     $myTable .= '<td class="tright">' . $datarow['ProzentAbsetzbar'] . '</td>' . PHP_EOL;
-                    $myTable .= '<td><a href="' . $_SERVER['PHP_SELF'] . '?delete=' . $datarow['id'] . '" onclick="return confirm(\'Are you sure you want to Remove?\');"><img src="images/cross.png"></a></td>' . PHP_EOL;
+                    $myTable .= '<td><a href="' . $_SERVER['PHP_SELF'] . '?delete=' . $datarow['id'] . '" onclick="return confirm(\'Are you sure you want to Remove?\');"><img src="images/trashbin.png"></a></td>' . PHP_EOL;
                     $myTable .= '</tr>' . PHP_EOL;
                 }
             }
