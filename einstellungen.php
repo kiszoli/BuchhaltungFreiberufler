@@ -71,7 +71,7 @@ if (isset($_POST['save'])) $Settings->Save($_POST['userdata']);
 				</div>
 				<div class="listentry">
 					<div class="halfcolumn"><input type="email" name="userdata[Email]" placeholder="Email" value="<?php echo $Settings->Email; ?>" /></div>
-					<div class="halfcolumn"><input type="url" name="userdata[Internet]" placeholder="Internet" value="<?php echo $Settings->Internet; ?>" /></div>
+					<div class="halfcolumn"><input type="text" name="userdata[Internet]" placeholder="Internet" value="<?php echo $Settings->Internet; ?>" /></div>
 				</div>
 				<div class="listentry">
 					<div class="halfcolumn"><input type="text" name="userdata[SteuerNr]" placeholder="Steuer-Nr" value="<?php echo $Settings->SteuerNr; ?>" /></div>
@@ -79,7 +79,7 @@ if (isset($_POST['save'])) $Settings->Save($_POST['userdata']);
 				</div>
 				<div class="listentry">
 					<div class="fourthcolumn">Steuersatz 0%</div>
-					<div class="fourthcolumn"><input type="hidden" name="userdata[Steuersatz]" value="<?php echo $Settings->Steuersatz; ?>" readonly/></div>
+					<div class="fourthcolumn"><input type="hidden" name="userdata[Steuersatz]" value="<?php echo $Settings->Steuersatz; ?>" readonly /></div>
 					<div class="halfcolumn">umsatzsteuerbefreit nach § 19 Abs. 1 UStG</div>
 				</div>
 				<div class="listentry">
@@ -103,6 +103,28 @@ if (isset($_POST['save'])) $Settings->Save($_POST['userdata']);
 				</div>
 				<div class="listentry">
 					<div class="fullcolumn"><textarea rows="4" cols="60" name="userdata[TextGutschrift]" placeholder="Text Gutschrift"><?php echo $Settings->TextGutschrift; ?></textarea></div>
+				</div>
+				<hr>
+				<div class="listentry">
+					<div class="halfcolumn"><input type="text" name="userdata[MailHost]" placeholder="Mailserver" value="<?php echo $Settings->MailHost; ?>" /></div>
+					<div class="fourthcolumn"><input type="text" name="userdata[MailPort]" placeholder="Port" value="<?php echo $Settings->MailPort; ?>" /></div>
+				</div>
+				<div class="listentry">
+					<div class="halfcolumn"><label class="container">Authentifizierung benötigt<input type="checkbox" name="userdata[MailSMTPAuth]" value="1"<?php if ($Settings->MailSMTPAuth == 1) echo ' checked="checked"';?>><span class="checkmark"></span></label></div>
+				</div>
+				<div class="listentry">
+					<div class="halfcolumn"><input type="text" name="userdata[MailUsername]" placeholder="SMTP Benutzername" value="<?php echo $Settings->MailUsername; ?>" /></div>
+					<div class="halfcolumn"><input type="password" name="userdata[MailPassword]" placeholder="SMTP Passwort" value="<?php echo $Settings->MailPassword; ?>" /></div>
+				</div>
+				<div class="listentry">
+					<div class="fourthcolumn"><br>Verschlüsselung</div>
+					<div class="fourthcolumn">
+						<select name="userdata[MailSMTPSecure]">
+							<option value="keine"<?php if ($Settings->MailSMTPSecure == 'keine') echo "selected"; ?>>keine</option>
+							<option value="SSL/TLS"<?php if ($Settings->MailSMTPSecure == 'SSL/TLS') echo "selected"; ?>>SSL/TLS</option>
+							<option value="STARTTLS"<?php if ($Settings->MailSMTPSecure == 'STARTTLS') echo "selected"; ?>>STARTTLS</option>
+						</select>
+					</div>
 				</div>
 				<div class="listentry">
 					<div class="fullcolumn"><input type="text" name="userdata[MailBetreff]" placeholder="Mail Betreff" value="<?php echo $Settings->MailBetreff; ?>" /></div>

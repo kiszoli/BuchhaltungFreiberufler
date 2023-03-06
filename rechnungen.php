@@ -46,6 +46,7 @@ if (isset($_POST['saveposition'])) $Income->SavePosition($_POST['userdata']);
 if (isset($_GET['deleteposition'])) $Income->DeletePosition($_GET['deleteposition']);
 $Kuerzel = 'R';
 if (isset($_GET['kuerzel'])) $Kuerzel = $_GET['kuerzel'];
+if (isset($_GET['mailinvoice'])) $Income->MailInvoice($_GET['mailinvoice']);
 
 
 

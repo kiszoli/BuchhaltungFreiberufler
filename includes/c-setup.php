@@ -1,7 +1,7 @@
 <?php
 require_once("dbconfig.php");
 
-class dbtables{
+class setup{
     var $DBLink;
 
     function __construct()
@@ -88,7 +88,13 @@ class dbtables{
             MailBetreff VARCHAR(100) NOT NULL DEFAULT '',
             MailRechnung TEXT NOT NULL DEFAULT '',
             MailGutschrift TEXT NOT NULL DEFAULT '',
-            Steuersatz INT(11) NOT NULL DEFAULT 0
+            Steuersatz INT(11) NOT NULL DEFAULT 0,
+            MailHost VARCHAR(100) NOT NULL DEFAULT '',
+            MailSMTPAuth INT(1) NOT NULL DEFAULT 1,
+            MailUsername VARCHAR(100) NOT NULL DEFAULT '',
+            MailPassword VARCHAR(100) NOT NULL DEFAULT '',
+            MailSMTPSecure VARCHAR(100) NOT NULL DEFAULT '',
+            MailPort INT(11) NOT NULL DEFAULT 25
             ) DEFAULT CHARSET=utf8";
         $query = mysqli_query($this->DBLink, $sql);
         if (!$query) {
@@ -174,9 +180,7 @@ class dbtables{
         return true;
     }
 
-    function Create(){
-        //ToDo
-        //if database is empty create tables
+    function Run(){
         $this->CreateAdressen();
         $this->CreateAusgaben();
         $this->CreateEinstellungen();

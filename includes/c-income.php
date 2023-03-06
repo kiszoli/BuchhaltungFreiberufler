@@ -87,6 +87,7 @@ class income
                 $accordionHead .= '<div class="rightalign">&nbsp;<a href="' . $_SERVER['PHP_SELF'] . '?printinvoice=' . $datarow['Rechnungen_id'] . '" target="_blanc"><img src="images/print_tn.png"></a></div>';
                 $accordionHead .= '<div class="rightalign">&nbsp;<a href="' . $_SERVER['PHP_SELF'] . '?insertposition=' . $datarow['Rechnungen_id'] . '"><img src="images/plus.png"></a></div>';
                 $accordionHead .= '<div class="rightalign">&nbsp;<a href="' . $_SERVER['PHP_SELF'] . '?updateinvoice=' . $datarow['Rechnungen_id'] . '"><img src="images/pencil.png"></a></div>';
+                $accordionHead .= '<div class="rightalign">&nbsp;<a href="' . $_SERVER['PHP_SELF'] . '?mailinvoice=' . $datarow['Rechnungen_id'] . '"><img src="images/mail.png"></a></div>';
 
                 if ($datarow['RechnungsId'] > 0) {
                     $myItem = '<div class="leftalign"><a href="' . $_SERVER['PHP_SELF'] . '?updateposition=' . $datarow['Rechnungspositionen_id'] . '">' . $datarow['Bezeichnung'] . '</a></div>';
@@ -263,5 +264,10 @@ class income
     {
         $myPosition = new position();
         $myPosition->Delete($PositionId);
+    }
+
+    function MailInvoice($RechnungsId){
+        $myInvoice = new invoice();
+        $myInvoice->MailInvoice($RechnungsId);
     }
 }

@@ -1,4 +1,13 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer/Exception.php';
+require 'PHPMailer/PHPMailer.php';
+require 'PHPMailer/SMTP.php';
+
 require_once("dbconfig.php");
 require_once("c-settings.php");
 require_once("c-position.php");
@@ -243,7 +252,8 @@ class invoice
         else return $this->Update($RechnungsId);
     }
 
-    function Delete($RechnungsId) {
+    function Delete($RechnungsId)
+    {
         $sql = "DELETE FROM Rechnungspositionen WHERE RechnungsId = " . $RechnungsId;
         $query = mysqli_query($this->DBLink, $sql);
         if (!$query) {
@@ -343,7 +353,16 @@ class invoice
         return $html;
     }
 
-    function Print($RechnungsId)
+    private function GetInvoiceFileName()
+    {
+        $outputName = $this->RechnungsNr;
+        $outputName .= '-' . $this->DateOut();
+        $outputName .= '-' . str_replace(' ', '_', $this->KunFirma);
+        $outputName .= '.pdf';
+        return $outputName;
+    }
+
+    function Print($RechnungsId, $ShowFile = true)
     {
         $this->Load($RechnungsId, '');
         // create new PDF document
@@ -394,12 +413,83 @@ class invoice
 
         // ---------------------------------------------------------
 
-        $outputName = $this->RechnungsNr;
-        $outputName.= '-' . date('d.m.Y', $this->RechnungsDatum);
-        $outputName.= '-' . str_replace(' ', '_', $this->KunFirma);
-        $pdf->Output(dirname(__FILE__, 2).'/rechnungen/'. $outputName . '.pdf', 'F');
+        $pdf->Output(dirname(__FILE__, 2) . '/rechnungen/' . $this->GetInvoiceFileName(), 'F');
 
         //Close and output PDF document
-        $pdf->Output('invoice.pdf', 'I');
+        if ($ShowFile) $pdf->Output($this->GetInvoiceFileName(), 'I');
+    }
+
+    function GetMailContent($MailContent) {
+        $myContent = str_replace('{EmpfaengerAnsprechpartner}', $this->KunName, $MailContent);
+        $myContent = str_replace('{AbsenderAnsprechpartner}', $this->AbsName, $myContent);
+        $myContent = str_replace('{AbsenderStrasseNr}', $this->AbsStrasseNr, $myContent);
+        $myContent = str_replace('{AbsenderPlzOrt}', $this->AbsPLZOrt, $myContent);
+        $myContent = str_replace('{AbsenderInternet}', $this->AbsInternet, $myContent);
+        $myContent = str_replace('{AbsenderEmail}', $this->AbsEmail, $myContent);
+        $myContent = str_replace('{AbsenderTelefon}', $this->AbsTelefon, $myContent);
+        $myContent = str_replace('{AbsenderMobil}', $this->AbsMobil, $myContent);
+        $myContent = str_replace('{Bankname}', $this->BankName, $myContent);
+        $myContent = str_replace('{BIC}', $this->BIC, $myContent);
+        $myContent = str_replace('{IBAN}', $this->IBAN, $myContent);
+        return $myContent;
+    }
+
+    function MailInvoice($RechnungsId)
+    {
+        $settings = new settings();
+        $this->Load($RechnungsId);
+        $kunde = new address();
+        $kunde->Load($this->AdressenId);
+
+
+        $mail = new PHPMailer(true);
+        try {
+            //Server settings
+            $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+            $mail->isSMTP();
+            $mail->Host       = $settings->MailHost;                    //Set the SMTP server to send through
+            $mail->SMTPAuth   = $settings->MailSMTPAuth;                //Enable SMTP authentication
+            $mail->Username   = $settings->MailUsername;                //SMTP username
+            $mail->Password   = $settings->MailPassword;                //SMTP password
+            switch ($settings->MailSMTPSecure) {
+                case 'STARTTLS':
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    break;
+                case 'SSL/TLS':
+                    $mail->SMTPSecure::ENCRYPTION_SMTPS;
+                    break;
+            }                                                           //Enable implicit TLS encryption
+            $mail->Port       = $settings->MailPort;                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+
+
+            //Recipients
+            $fromName = $settings->Firma;
+            if ($settings->Firma == '') $fromName = $settings->Ansprechpartner;
+            $mail->setFrom($settings->Email, $fromName);
+            $toName = $kunde->Ansprechpartner;
+            if ($kunde->Ansprechpartner == '') $toName = $kunde->Firma;
+            $mail->addAddress($kunde->Email, $toName);     //Add a recipient
+            $mail->addReplyTo($settings->Email, $fromName);
+            $mail->addBCC($settings->Email);
+
+            //Attachments
+            //if (!file_exists('rechnungen/' . $this->GetInvoiceFileName())) $this->Print($RechnungsId, false);
+            if (file_exists('rechnungen/' . $this->GetInvoiceFileName()))
+                $mail->addAttachment('rechnungen/' . $this->GetInvoiceFileName());         //Add attachments
+
+            //Content
+            $mail->isHTML(true);                                  //Set email format to HTML
+            $mail->Subject = $settings->MailBetreff;
+            $myBody = $this->GetMailContent($settings->MailRechnung);
+            $mail->Body    = $myBody;
+            $mail->AltBody = strip_tags($myBody);
+
+            $mail->CharSet = 'UTF-8';
+
+            $mail->send();
+            echo 'Message has been sent';
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
     }
 }

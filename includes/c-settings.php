@@ -35,6 +35,13 @@ class settings
 
     var $Steuersatz = 0;
 
+    var $MailHost = '';
+    var $MailSMTPAuth = 1;
+    var $MailUsername = '';
+    var $MailPassword = '';
+    var $MailSMTPSecure = '';
+    var $MailPort = 25;
+
     var $DBLink;
 
     function __construct()
@@ -87,6 +94,13 @@ class settings
                 $this->MailGutschrift = $datarow['MailGutschrift'];
 
                 $this->Steuersatz = $datarow['Steuersatz'];
+
+                $this->MailHost = $datarow['MailHost'];
+                $this->MailSMTPAuth = $datarow['MailSMTPAuth'];
+                $this->MailUsername = $datarow['MailUsername'];
+                $this->MailPassword = $datarow['MailPassword'];
+                $this->MailSMTPSecure = $datarow['MailSMTPSecure'];
+                $this->MailPort = $datarow['MailPort'];
             } else {
                 $firstRun = true;
             }
@@ -134,6 +148,14 @@ class settings
         $this->MailGutschrift = $Userdata['MailGutschrift'];
 
         $this->Steuersatz = $Userdata['Steuersatz'];
+
+        $this->MailHost = $Userdata['MailHost'];
+        if ($Userdata['MailSMTPAuth'] == 1) $this->MailSMTPAuth = 1;
+        else $this->MailSMTPAuth = 0;
+        $this->MailUsername = $Userdata['MailUsername'];
+        $this->MailPassword = $Userdata['MailPassword'];
+        $this->MailSMTPSecure = $Userdata['MailSMTPSecure'];
+        $this->MailPort = $Userdata['MailPort'];
     }
 
     function Save($Userdata)
@@ -173,7 +195,14 @@ class settings
         $sql .= "MailRechnung = '" . $this->MailRechnung . "', ";
         $sql .= "MailGutschrift = '" . $this->MailGutschrift . "', ";
 
-        $sql .= "Steuersatz = '" . $this->Steuersatz . "'";
+        $sql .= "Steuersatz = " . $this->Steuersatz . ", ";
+
+        $sql .= "MailHost = '"  . $this->MailHost . "', ";
+        $sql .= "MailSMTPAuth = "  . $this->MailSMTPAuth . ", ";
+        $sql .= "MailUsername = '"  . $this->MailUsername . "', ";
+        $sql .= "MailPassword = '"  . $this->MailPassword . "', ";
+        $sql .= "MailSMTPSecure = '"  . $this->MailSMTPSecure . "', ";
+        $sql .= "MailPort = " . $this->MailPort;
 
         $query = mysqli_query($this->DBLink, $sql);
         if (!$query) {

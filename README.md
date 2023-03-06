@@ -1,9 +1,6 @@
 # BuchhaltungFreiberufler
 PHP/MySQL Webfrontend für Rechnungen, Ausgaben, Adressen und einfacher EÜR ohne Vorsteuer
 
-Diese Anwendung ist auf meine eigenen Bedürfnisse zugeschnitten. Ich war genervt weil die Software, die ich gefunden habe zu teuer/überladen/unnötig kompliziert ist.
-Funktionen wie Warenbestände, Verschiedene Steuersätze oder Ähnliches gibt es hier nicht.
-
 Mit dieser Anwendung werden
 - Rechnungen erstellt, als PDF gespeichert und gedruckt
 - Ausgaben erfasst
