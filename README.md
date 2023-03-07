@@ -1,14 +1,15 @@
 # BuchhaltungFreiberufler
 PHP/MySQL Webfrontend für Rechnungen, Ausgaben, Adressen und einfacher EÜR ohne Vorsteuer
 
-Mit dieser Anwendung werden
-- Rechnungen erstellt, als PDF gespeichert und gedruckt
-- Ausgaben erfasst
-- Kundenadressen verwaltet
-- Eine einfache jährliche EÜR erstellt
+Funktionen
+- Rechnungen erstellen
+- PDF Erzeugen
+- per Mail versenden
+- Ausgaben erfassen
+- Kundenadressen verwalten
+- Eine einfache jährliche EÜR erstellen
 
 Geplant ist
-- Rechnungen / Gutschriften per Mail verschicken
 - Export der Einnahmen / Ausgaben / EÜR als Excel-Datei
 - EÜR pro Monat, Quartal, Jahr
 
