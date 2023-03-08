@@ -445,7 +445,7 @@ class invoice
         $mail = new PHPMailer(true);
         try {
             //Server settings
-            $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+            //$mail->SMTPDebug = SMTP::DEBUG_SERVER;
             $mail->isSMTP();
             $mail->Host       = $settings->MailHost;                    //Set the SMTP server to send through
             $mail->SMTPAuth   = $settings->MailSMTPAuth;                //Enable SMTP authentication

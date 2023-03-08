@@ -22,3 +22,9 @@ Installation
 6. Benutzername und Passwort eingeben, merken und Login anklicken
 Wichtig!!
 Der Benutzername und das Passwort das beim ersten Aufruf eingegeben wird ist für spätere Anmeldungen notwendig. Wählt weise!!
+
+Benutzte Bibliotheken
+PDF Erstellung
+https://github.com/tecnickcom/tc-lib-pdf
+SMTP Mails
+https://github.com/PHPMailer/PHPMailer
