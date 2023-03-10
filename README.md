@@ -24,8 +24,6 @@ Wichtig!!
 Der Benutzername und das Passwort das beim ersten Aufruf eingegeben wird ist für spätere Anmeldungen notwendig. Wählt weise!!
 
 3rd Party Libraries
-https://github.com/tecnickcom/tc-lib-pdf
-
-https://github.com/PHPMailer/PHPMailer
-
-https://github.com/shuchkin/simplexlsxgen
+- PDF https://github.com/tecnickcom/tc-lib-pdf
+- PHPMailer https://github.com/PHPMailer/PHPMailer
+- Excel Export https://github.com/shuchkin/simplexlsxgen
