@@ -3,6 +3,7 @@ ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 
 require_once("includes/c-expense.php");
+include("includes/simplexlsxgen/SimpleXLSXGen.php");
 
 session_start();
 if (isset($_GET['logout'])) $_SESSION['userId'] = 0;
@@ -16,6 +17,12 @@ $updateId = 0;
 if (isset($_GET['update'])) $updateId = $_GET['update'];
 if (isset($_GET['delete'])) $Ausgaben->Delete($_GET['delete']);
 if (isset($_POST['save'])) $Ausgaben->Save($_POST['userdata']);
+if (isset($_GET['export'])) {
+	$myData = $Ausgaben->GetExportList($_SESSION['bilanzjahr']);
+
+	$xlsx = Shuchkin\SimpleXLSXGen::fromArray($myData);
+	$xlsx->downloadAs('ausgaben.xlsx'); // or $xlsx_content = (string) $xlsx or saveAs('books.xlsx')
+}
 
 ?>
 <!doctype html>
@@ -48,6 +55,7 @@ if (isset($_POST['save'])) $Ausgaben->Save($_POST['userdata']);
 	<div id="wrapper">
 		<h1>Ausgaben</h1>
 		<?php echo $Ausgaben->GetExpensesList($_SESSION['bilanzjahr'], $updateId); ?>
+		<p><a href="ausgaben.php?export">Excel Export</a></p>
 	</div>
 	<div class="clearfix"></div>
 </body>

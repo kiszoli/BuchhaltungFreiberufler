@@ -25,7 +25,8 @@ class expense
         $this->Datum = time();
     }
 
-    function Load($ExpenseId) {
+    function Load($ExpenseId)
+    {
         $sql = "SELECT * FROM Ausgaben WHERE id = " . $ExpenseId;
         $query = mysqli_query($this->DBLink, $sql);
 
@@ -42,7 +43,8 @@ class expense
         }
     }
 
-    private function CurrencyIn($CurrencyString) {
+    private function CurrencyIn($CurrencyString)
+    {
         $res = preg_replace("/[^0-9,-]/", "", $CurrencyString);
         if (substr($res, -1) == '-') $res = rtrim($res, '-');
         $count = 0;
@@ -50,16 +52,18 @@ class expense
         if ($count == 0) $res .= '.00';
         if (substr($res, -1) == '.') $res .= '00';
         if (substr($res, 0, 1) == '.') $res = '0' . $res;
-    
+
         return number_format($res, 2, '.', '');
     }
 
-    private function IntIn($IntString) {
+    private function IntIn($IntString)
+    {
         $res = preg_replace("/[^0-9]/", "", $IntString);
         return $res;
     }
 
-    private function SetData($Userdata) {
+    private function SetData($Userdata)
+    {
         $this->id = $Userdata['id'];
         $this->Datum = strtotime($Userdata['Datum']);
         $this->Bezeichnung = $Userdata['Bezeichnung'];
@@ -72,7 +76,8 @@ class expense
         $this->KontoId = $Userdata['KontoId'];
     }
 
-    private function Insert() {
+    private function Insert()
+    {
         $sql = "INSERT INTO Ausgaben (Datum, Bezeichnung, Brutto, MwSt, KontoId)";
         $sql .= " VALUES (" . $this->Datum . ", ";
         $sql .= "'" . $this->Bezeichnung . "', ";
@@ -90,7 +95,8 @@ class expense
         return $this->id;
     }
 
-    private function Update() {
+    private function Update()
+    {
         $sql = "UPDATE Ausgaben SET ";
         $sql .= "Datum = " . $this->Datum . ", ";
         $sql .= "Bezeichnung = '" . $this->Bezeichnung . "', ";
@@ -105,13 +111,15 @@ class expense
         return $this->id;
     }
 
-    function Save($Userdata) {
+    function Save($Userdata)
+    {
         $this->SetData($Userdata);
         if ($this->id > 0) return $this->Update();
         else return $this->Insert();
     }
 
-    function Delete($ExpenseId) {
+    function Delete($ExpenseId)
+    {
         $sql = "DELETE FROM Ausgaben WHERE id = " . $ExpenseId;
         $query = mysqli_query($this->DBLink, $sql);
         if (!$query) {
@@ -294,5 +302,96 @@ class expense
         }
 
         return $myTable;
+    }
+
+    function GetExportList($Bilanzjahr)
+    {
+        $excelData[0] = array('Datum', 'Kontenrahmen', 'Bezeichnung', 'Netto', 'MwSt', 'Brutto');
+
+        $myBilanzStart = (strtotime('01.01.' . $Bilanzjahr));
+        $myBilanzEnd = (strtotime('31.12.' . $Bilanzjahr));
+
+        $sql = "SELECT Ausgaben.id, Ausgaben.Datum, Konten.Bezeichnung AS Kontenrahmen, Ausgaben.Bezeichnung, Ausgaben.MwSt, Ausgaben.Brutto
+        FROM Ausgaben LEFT JOIN Konten ON Ausgaben.KontoId = Konten.id
+        WHERE (((Ausgaben.Datum)>=" . $myBilanzStart . ")) AND (((Ausgaben.Datum)<" . $myBilanzEnd . "))
+        ORDER BY Ausgaben.Datum, Kontenrahmen, Ausgaben.Bezeichnung";
+
+        $query = mysqli_query($this->DBLink, $sql);
+        if (!$query) {
+            echo mysqli_error($this->DBLink);
+        } else {
+            while ($datarow = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
+                $excelData[$datarow['id']] = array(
+                    date("d.m.Y", $datarow['Datum']),
+                    $datarow['Kontenrahmen'],
+                    $datarow['Bezeichnung'],
+                    number_format($datarow['Brutto'] / (100 + $datarow['MwSt']) * 100, 2, ',', '.'),
+                    $datarow['MwSt'],
+                    $datarow['Brutto']
+                );
+            }
+        }
+        return $excelData;
+    }
+
+    function GetExportListEUER($Bilanzjahr, $SumIncome)
+    {
+        $excelData[0] = array('KontoNr', 'Bezeichnung', 'Netto €', 'Steuersatz %', 'MwSt €', 'Brutto €', 'Absetzbar %', 'Ausgaben Netto €', 'Ausgaben Brutto €', 'Einnahmen €');
+        $excelData[1] = array('', '', '', '', '', '', '', '', '', $SumIncome);
+
+        $myBilanzStart = (strtotime('01.01.' . $Bilanzjahr));
+        $myBilanzEnd = (strtotime('31.12.' . $Bilanzjahr));
+
+        $sql = "SELECT Konten.KontoNr, Konten.Bezeichnung, Sum(Ausgaben.Brutto) AS SummeBrutto, Ausgaben.MwSt, Konten.ProzentAbsetzbar";
+        $sql .= " FROM Ausgaben INNER JOIN Konten ON Ausgaben.KontoId = Konten.id";
+        $sql .= " WHERE (((Ausgaben.Datum)>=" . strtotime('01.01.' . $Bilanzjahr) . ") AND ((Ausgaben.Datum)<=" . strtotime('31.12.' . $Bilanzjahr) . "))";
+        $sql .= " GROUP BY Konten.KontoNr, Konten.Bezeichnung, Ausgaben.MwSt, Konten.ProzentAbsetzbar";
+
+        $i = 2;
+        $sumNetto = 0;
+        $sumBrutto = 0;
+        $sumAusgaben = 0;
+        $sumAusgabenNetto = 0;
+        $sumMwSt = 0;
+        $query = mysqli_query($this->DBLink, $sql);
+        if (!$query) {
+            echo mysqli_error($this->DBLink);
+        } else {
+            while ($datarow = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
+                $netto = $datarow['SummeBrutto'] / (100 + $datarow['MwSt']) * 100;
+                $mwst = $datarow['SummeBrutto'] - $netto;
+                $sumNetto = $sumNetto + $netto;
+                $sumMwSt = $sumMwSt + $mwst;
+                $sumBrutto = $sumBrutto + $datarow['SummeBrutto'];
+                $ausgaben = $datarow['ProzentAbsetzbar'] / 100 * $datarow['SummeBrutto'];
+                $ausgabenNetto = $datarow['ProzentAbsetzbar'] / 100 * $netto;
+                $sumAusgabenNetto = $sumAusgabenNetto + $ausgabenNetto;
+                $sumAusgaben = $sumAusgaben + $ausgaben;
+                $excelData[$i++] = array(
+                    $datarow['KontoNr'],
+                    $datarow['Bezeichnung'],
+                    number_format($netto, 2, ',', '.'),
+                    $datarow['MwSt'],
+                    number_format($mwst, 2, ',', '.'),
+                    number_format($datarow['SummeBrutto'], 2, ',', '.'),
+                    $datarow['ProzentAbsetzbar'],
+                    number_format($ausgabenNetto, 2, ',', '.'),
+                    number_format($ausgaben, 2, ',', '.'),
+                    '',
+                );
+            }
+        }
+        $excelData[$i++] = array(
+            '', 
+            '', 
+            number_format($sumNetto, 2, ',', '.'), 
+            '', 
+            number_format($sumMwSt, 2, ',', '.'), 
+            number_format($sumBrutto, 2, ',', '.'), 
+            '', 
+            number_format($sumAusgabenNetto, 2, ',', '.'),
+            number_format($sumAusgaben, 2, ',', '.'),
+            '');
+        return $excelData;
     }
 }

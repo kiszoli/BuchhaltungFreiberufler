@@ -23,8 +23,7 @@ Installation
 Wichtig!!
 Der Benutzername und das Passwort das beim ersten Aufruf eingegeben wird ist für spätere Anmeldungen notwendig. Wählt weise!!
 
-Benutzte Bibliotheken
-PDF Erstellung
+3rd Party Libraries
 https://github.com/tecnickcom/tc-lib-pdf
-SMTP Mails
 https://github.com/PHPMailer/PHPMailer
+https://github.com/shuchkin/simplexlsxgen

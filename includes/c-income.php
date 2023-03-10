@@ -232,6 +232,38 @@ class income
         }
     }
 
+    function GetExportList($Bilanzjahr)
+    {
+        $excelData[0] = array('RechnungsNr', 'Datum', 'Kunde', 'Rechnungsposition', 'Netto', 'MwSt', 'Brutto');
+
+        $myBilanzStart = (strtotime('01.01.' . $Bilanzjahr));
+        $myBilanzEnd = (strtotime('31.12.' . $Bilanzjahr));
+
+        $sql = "SELECT Rechnungspositionen.id, Rechnungen.RechnungsNr, Rechnungen.RechnungsDatum, Rechnungen.KunFirma, Rechnungspositionen.Bezeichnung, Rechnungen.Steuersatz, Rechnungspositionen.Nettobetrag ";
+        $sql .= "FROM Rechnungen LEFT JOIN Rechnungspositionen ON Rechnungen.id = Rechnungspositionen.RechnungsId ";
+        $sql .= "WHERE Rechnungen.RechnungsDatum >= " . $myBilanzStart . " AND Rechnungen.RechnungsDatum <= " . $myBilanzEnd . " ";
+        $sql .= "ORDER BY Rechnungen.RechnungsNr";
+
+        $query = mysqli_query($this->DBLink, $sql);
+        if (!$query) {
+            echo mysqli_error($this->DBLink);
+        } else {
+            while ($datarow = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
+                $mwst = $datarow['Nettobetrag'] / 100 * $datarow['Steuersatz'];
+                $brutto = $datarow['Nettobetrag'] + $mwst;
+                $excelData[$datarow['id']] = array(
+                    $datarow['RechnungsNr'],
+                    date("d.m.Y", $datarow['RechnungsDatum']), 
+                    $datarow['KunFirma'], 
+                    $datarow['Bezeichnung'], 
+                    $datarow['Nettobetrag'],
+                    $mwst,
+                    $brutto);
+            }
+        }
+        return $excelData;
+    }
+
     function PrintInvoice($RechnungsId)
     {
         $myInvoice = new invoice();

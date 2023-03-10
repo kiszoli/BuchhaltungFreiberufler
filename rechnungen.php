@@ -3,6 +3,7 @@ ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 
 require_once("includes/c-income.php");
+include("includes/simplexlsxgen/SimpleXLSXGen.php");
 
 session_start();
 if (isset($_GET['logout'])) $_SESSION['userId'] = 0;
@@ -47,8 +48,12 @@ if (isset($_GET['deleteposition'])) $Income->DeletePosition($_GET['deletepositio
 $Kuerzel = 'R';
 if (isset($_GET['kuerzel'])) $Kuerzel = $_GET['kuerzel'];
 if (isset($_GET['mailinvoice'])) $Income->MailInvoice($_GET['mailinvoice']);
+if (isset($_GET['export'])) {
+	$myData = $Income->GetExportList($_SESSION['bilanzjahr']);
 
-
+	$xlsx = Shuchkin\SimpleXLSXGen::fromArray($myData);
+	$xlsx->downloadAs('einnahmen.xlsx'); // or $xlsx_content = (string) $xlsx or saveAs('books.xlsx')
+}
 
 ?>
 <!doctype html>
@@ -82,7 +87,7 @@ if (isset($_GET['mailinvoice'])) $Income->MailInvoice($_GET['mailinvoice']);
 		<h1>Einnahmen</h1>
 		<?php echo $Income->GetContent($ContentNo, $_SESSION['bilanzjahr'], $KundenId, $Kuerzel, $RechnungsId, $PositionId); ?>
 		<hr>
-		<a href="adressen.php">Rechnung / Gutschrift erstellen</a>
+		<a href="adressen.php">Rechnung / Gutschrift erstellen</a> | <a href="rechnungen.php?export">Excel Export</a>
 		<script>
             var acc = document.getElementsByClassName("accordion");
             var i;

@@ -4,6 +4,7 @@ error_reporting(E_ALL | E_STRICT);
 
 require_once("includes/c-income.php");
 require_once("includes/c-expense.php");
+include("includes/simplexlsxgen/SimpleXLSXGen.php");
 
 session_start();
 if (isset($_GET['logout'])) $_SESSION['userId'] = 0;
@@ -14,6 +15,13 @@ if (isset($_GET['bilanzdelta'])) $_SESSION['bilanzjahr'] = $_SESSION['bilanzjahr
 
 $myEinnahmen = new income();
 $myAusgaben = new expense();
+
+if (isset($_GET['export'])) {
+	$myData = $myAusgaben->GetExportListEUER($_SESSION['bilanzjahr'], $myEinnahmen->GetSumPerAnno($_SESSION['bilanzjahr']));
+
+	$xlsx = Shuchkin\SimpleXLSXGen::fromArray($myData);
+	$xlsx->downloadAs('E-Ue-R.xlsx'); // or $xlsx_content = (string) $xlsx or saveAs('books.xlsx')
+}
 
 ?>
 <!doctype html>
@@ -47,6 +55,7 @@ $myAusgaben = new expense();
 	<div id="wrapper">
 		<h1>Einnahmen-Überschussrechnung</h1>
 		<?php echo $myAusgaben->GetEUER($_SESSION['bilanzjahr'], $myEinnahmen->GetSumPerAnno($_SESSION['bilanzjahr'])); ?>
+		<p><a href="index.php?export">Excel Export</a></p>
 	</div>
 	<div class="clearfix"></div>
 </body>
