@@ -8,9 +8,9 @@ Funktionen
 - Ausgaben erfassen
 - Kundenadressen verwalten
 - Eine einfache jährliche EÜR erstellen
+- Export der Einnahmen / Ausgaben / EÜR als Excel-Datei
 
 Geplant ist
-- Export der Einnahmen / Ausgaben / EÜR als Excel-Datei
 - EÜR pro Monat, Quartal, Jahr
 
 Installation
@@ -25,5 +25,7 @@ Der Benutzername und das Passwort das beim ersten Aufruf eingegeben wird ist fü
 
 3rd Party Libraries
 https://github.com/tecnickcom/tc-lib-pdf
+
 https://github.com/PHPMailer/PHPMailer
+
 https://github.com/shuchkin/simplexlsxgen
