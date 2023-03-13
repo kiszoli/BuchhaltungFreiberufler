@@ -19,32 +19,8 @@ class income
         }
     }
 
-    function GetSumPerAnno($Bilanzjahr)
+    function GetList($von, $bis)
     {
-        $sql = "SELECT Sum(Rechnungspositionen.Nettobetrag) AS SumNettobetrag";
-        $sql .= " FROM Rechnungen LEFT JOIN Rechnungspositionen ON Rechnungen.id = Rechnungspositionen.RechnungsId";
-        $sql .= " WHERE Rechnungen.RechnungsDatum >= " . strtotime('01.01.' . $Bilanzjahr) . " AND Rechnungen.RechnungsDatum <= " . strtotime('31.12.' . $Bilanzjahr);
-        //echo $sql;
-        $query = mysqli_query($this->DBLink, $sql);
-
-        $jahresSumme = 0.00;
-
-        if (!$query) {
-            echo mysqli_error($this->DBLink);
-        } else {
-            if (mysqli_num_rows($query) > 0) {
-                $datarow = mysqli_fetch_array($query, MYSQLI_ASSOC);
-                $jahresSumme = $datarow['SumNettobetrag'];
-            }
-        }
-
-        return $jahresSumme;
-    }
-
-    function GetList($Bilanzjahr)
-    {
-        $myBilanzStart = (strtotime('01.01.' . $Bilanzjahr));
-        $myBilanzEnd = (strtotime('31.12.' . $Bilanzjahr));
         $sql = "SELECT Rechnungen.id AS 'Rechnungen_id', Rechnungen.RechnungsNr, Rechnungen.RechnungsDatum, Rechnungen.SteuerNr, Rechnungen.AbsFirma, ";
         $sql .= "Rechnungen.AbsName, Rechnungen.AbsStrasseNr, Rechnungen.AbsPLZOrt, Rechnungen.AbsTelefon, ";
         $sql .= "Rechnungen.AbsMobil, Rechnungen.AbsInternet, Rechnungen.AbsEmail, Rechnungen.KunFirma, Rechnungen.KunName, ";
@@ -53,7 +29,7 @@ class income
         $sql .= "Rechnungspositionen.Einheit, Rechnungspositionen.Bezeichnung, ";
         $sql .= "Rechnungspositionen.Nettobetrag ";
         $sql .= "FROM Rechnungen LEFT JOIN Rechnungspositionen ON Rechnungen.id = Rechnungspositionen.RechnungsId ";
-        $sql .= "WHERE Rechnungen.RechnungsDatum >= " . $myBilanzStart . " AND Rechnungen.RechnungsDatum <= " . $myBilanzEnd . " ";
+        $sql .= "WHERE Rechnungen.RechnungsDatum >= " . $von . " AND Rechnungen.RechnungsDatum < " . $bis . " ";
         $sql .= "ORDER BY Rechnungen.RechnungsDatum, Rechnungen.RechnungsNr";
         //echo $sql;
         $query = mysqli_query($this->DBLink, $sql);
@@ -114,8 +90,9 @@ class income
         return $accordion;
     }
 
-    private function GetRechnungsNr($Kuerzel, $Bilanzjahr)
+    private function GetRechnungsNr($Kuerzel)
     {
+        $Bilanzjahr = date('Y');
         $sql = "SELECT * FROM Rechnungen WHERE RechnungsNr LIKE '" . $Kuerzel . $Bilanzjahr . "%'";
         $query = mysqli_query($this->DBLink, $sql);
         if (!$query) {
@@ -127,12 +104,12 @@ class income
         return $Kuerzel . $Bilanzjahr . str_pad($newNum, 4, "0", STR_PAD_LEFT);
     }
 
-    function GetInvoiceForm($RechnungsId, $KundenId, $Kuerzel, $Bilanzjahr)
+    function GetInvoiceForm($RechnungsId, $KundenId, $Kuerzel)
     {
         $myInvoice = new invoice();
         if ($RechnungsId > 0) $myInvoice->Load($RechnungsId);
         else {
-            $myInvoice->RechnungsNr = $this->GetRechnungsNr($Kuerzel, $Bilanzjahr);
+            $myInvoice->RechnungsNr = $this->GetRechnungsNr($Kuerzel);
             $mySettings = new settings();
             if ($Kuerzel == 'G') {
                 $myInvoice->Ueberschrift = $mySettings->TitelGutschrift;
@@ -218,30 +195,31 @@ class income
         return $myForm;
     }
 
-    function GetContent($ContentNo, $Bilanzjahr, $KundenId, $Kuerzel, $RechnungsId, $PositionId)
+    function GetContent($ContentNo, $BalanceFrom, $BalanceTo, $KundenId, $Kuerzel, $RechnungsId, $PositionId)
     {
+        $von = $BalanceFrom;
+        $bis = strtotime("+1 month", $BalanceTo);
         switch ($ContentNo) {
             case 1:
-                return $this->GetInvoiceForm($RechnungsId, $KundenId, $Kuerzel, $Bilanzjahr);
+                return $this->GetInvoiceForm($RechnungsId, $KundenId, $Kuerzel);
                 break;
             case 2:
                 return $this->GetPositionForm($RechnungsId, $PositionId);
                 break;
             default:
-                return $this->GetList($Bilanzjahr);
+                return $this->GetList($von, $bis);
         }
     }
 
-    function GetExportList($Bilanzjahr)
+    function GetExportList($BalanceFrom, $BalanceTo)
     {
         $excelData[0] = array('RechnungsNr', 'Datum', 'Kunde', 'Rechnungsposition', 'Netto', 'MwSt', 'Brutto');
 
-        $myBilanzStart = (strtotime('01.01.' . $Bilanzjahr));
-        $myBilanzEnd = (strtotime('31.12.' . $Bilanzjahr));
+        $bis = strtotime("+1 month", $BalanceTo);
 
         $sql = "SELECT Rechnungspositionen.id, Rechnungen.RechnungsNr, Rechnungen.RechnungsDatum, Rechnungen.KunFirma, Rechnungspositionen.Bezeichnung, Rechnungen.Steuersatz, Rechnungspositionen.Nettobetrag ";
         $sql .= "FROM Rechnungen LEFT JOIN Rechnungspositionen ON Rechnungen.id = Rechnungspositionen.RechnungsId ";
-        $sql .= "WHERE Rechnungen.RechnungsDatum >= " . $myBilanzStart . " AND Rechnungen.RechnungsDatum <= " . $myBilanzEnd . " ";
+        $sql .= "WHERE Rechnungen.RechnungsDatum >= " . $BalanceFrom . " AND Rechnungen.RechnungsDatum < " . $bis . " ";
         $sql .= "ORDER BY Rechnungen.RechnungsNr";
 
         $query = mysqli_query($this->DBLink, $sql);

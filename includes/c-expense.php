@@ -1,5 +1,6 @@
 <?php
 require_once("dbconfig.php");
+require_once("c-settings.php");
 
 class expense
 {
@@ -129,8 +130,25 @@ class expense
         return -1;
     }
 
-    function GetEUER($BalanceYear, $SumIncome)
+    function GetEUER($BalanceFrom, $BalanceTo)
     {
+        $bis = strtotime("+1 month", $BalanceTo);
+
+        $sql = "SELECT Sum(Rechnungspositionen.Nettobetrag) AS SumNettobetrag";
+        $sql .= " FROM Rechnungen LEFT JOIN Rechnungspositionen ON Rechnungen.id = Rechnungspositionen.RechnungsId";
+        $sql .= " WHERE Rechnungen.RechnungsDatum >= " . $BalanceFrom . " AND Rechnungen.RechnungsDatum < " . $bis;
+        $query = mysqli_query($this->DBLink, $sql);
+        $SumIncome = 0.00;
+
+        if (!$query) {
+            echo mysqli_error($this->DBLink);
+        } else {
+            if (mysqli_num_rows($query) > 0) {
+                $datarow = mysqli_fetch_array($query, MYSQLI_ASSOC);
+                $SumIncome = $datarow['SumNettobetrag'];
+            }
+        }
+
         $myTable = '<table>' . PHP_EOL;
 
         $myTable .= '<thead>' . PHP_EOL;
@@ -153,7 +171,7 @@ class expense
 
         $sql = "SELECT Konten.KontoNr, Konten.Bezeichnung, Sum(Ausgaben.Brutto) AS SummeBrutto, Ausgaben.MwSt, Konten.ProzentAbsetzbar";
         $sql .= " FROM Ausgaben INNER JOIN Konten ON Ausgaben.KontoId = Konten.id";
-        $sql .= " WHERE (((Ausgaben.Datum)>=" . strtotime('01.01.' . $BalanceYear) . ") AND ((Ausgaben.Datum)<=" . strtotime('31.12.' . $BalanceYear) . "))";
+        $sql .= " WHERE (((Ausgaben.Datum)>=" . $BalanceFrom . ") AND ((Ausgaben.Datum)<" . $bis . "))";
         $sql .= " GROUP BY Konten.KontoNr, Konten.Bezeichnung, Ausgaben.MwSt, Konten.ProzentAbsetzbar";
         $query = mysqli_query($this->DBLink, $sql);
 
@@ -231,13 +249,13 @@ class expense
         return $arr;
     }
 
-    function GetExpensesList($bilanzjahr, $ausgabenId)
+    function GetExpensesList($BalanceFrom, $BalanceTo, $ausgabenId)
     {
         $myKonten = $this->GetKonten();
 
-        $myBilanzStart = (strtotime('01.01.' . $bilanzjahr));
-        $myBilanzEnd = (strtotime('31.12.' . $bilanzjahr));
-        $sql = "SELECT * FROM Ausgaben WHERE Datum >= " . $myBilanzStart . " AND Datum <= " . $myBilanzEnd . " ORDER BY Datum, KontoId, Bezeichnung";
+        $bis = strtotime("+1 month", $BalanceTo);
+
+        $sql = "SELECT * FROM Ausgaben WHERE Datum >= " . $BalanceFrom . " AND Datum < " . $bis . " ORDER BY Datum, KontoId, Bezeichnung";
         $query = mysqli_query($this->DBLink, $sql);
 
         $myTable = '';
@@ -304,16 +322,15 @@ class expense
         return $myTable;
     }
 
-    function GetExportList($Bilanzjahr)
+    function GetExportList($BalanceFrom, $BalanceTo)
     {
         $excelData[0] = array('Datum', 'Kontenrahmen', 'Bezeichnung', 'Netto', 'MwSt', 'Brutto');
 
-        $myBilanzStart = (strtotime('01.01.' . $Bilanzjahr));
-        $myBilanzEnd = (strtotime('31.12.' . $Bilanzjahr));
+        $bis = strtotime("+1 month", $BalanceTo);
 
         $sql = "SELECT Ausgaben.id, Ausgaben.Datum, Konten.Bezeichnung AS Kontenrahmen, Ausgaben.Bezeichnung, Ausgaben.MwSt, Ausgaben.Brutto
         FROM Ausgaben LEFT JOIN Konten ON Ausgaben.KontoId = Konten.id
-        WHERE (((Ausgaben.Datum)>=" . $myBilanzStart . ")) AND (((Ausgaben.Datum)<" . $myBilanzEnd . "))
+        WHERE (((Ausgaben.Datum)>= " . $BalanceFrom . ")) AND (((Ausgaben.Datum)< " . $bis . "))
         ORDER BY Ausgaben.Datum, Kontenrahmen, Ausgaben.Bezeichnung";
 
         $query = mysqli_query($this->DBLink, $sql);
@@ -325,7 +342,7 @@ class expense
                     date("d.m.Y", $datarow['Datum']),
                     $datarow['Kontenrahmen'],
                     $datarow['Bezeichnung'],
-                    number_format($datarow['Brutto'] / (100 + $datarow['MwSt']) * 100, 2, ',', '.'),
+                    number_format($datarow['Brutto'] / (100 + $datarow['MwSt']) * 100, 2),
                     $datarow['MwSt'],
                     $datarow['Brutto']
                 );
@@ -334,25 +351,48 @@ class expense
         return $excelData;
     }
 
-    function GetExportListEUER($Bilanzjahr, $SumIncome)
+    function GetExportListEUER($BalanceFrom, $BalanceTo)
     {
-        $excelData[0] = array('KontoNr', 'Bezeichnung', 'Netto €', 'Steuersatz %', 'MwSt €', 'Brutto €', 'Absetzbar %', 'Ausgaben Netto €', 'Ausgaben Brutto €', 'Einnahmen €');
-        $excelData[1] = array('', '', '', '', '', '', '', '', '', $SumIncome);
+        $bis = strtotime("+1 month", $BalanceTo);
 
-        $myBilanzStart = (strtotime('01.01.' . $Bilanzjahr));
-        $myBilanzEnd = (strtotime('31.12.' . $Bilanzjahr));
+        $sql = "SELECT Sum(Rechnungspositionen.Nettobetrag) AS SumNettobetrag";
+        $sql .= " FROM Rechnungen LEFT JOIN Rechnungspositionen ON Rechnungen.id = Rechnungspositionen.RechnungsId";
+        $sql .= " WHERE Rechnungen.RechnungsDatum >= " . $BalanceFrom . " AND Rechnungen.RechnungsDatum < " . $bis;
+        $query = mysqli_query($this->DBLink, $sql);
+        $SumIncome = 0.00;
+
+        if (!$query) {
+            echo mysqli_error($this->DBLink);
+        } else {
+            if (mysqli_num_rows($query) > 0) {
+                $datarow = mysqli_fetch_array($query, MYSQLI_ASSOC);
+                $SumIncome = $datarow['SumNettobetrag'];
+            }
+        }
+
+        $mySettings = new settings();
+        $vab = false;
+        if ($mySettings->Steuersatz > 0) $vab = true;
+        $excelData = array();
+        if ($vab) {
+            $excelData[0] = array('KontoNr', 'Bezeichnung', 'Netto €', 'Steuersatz %', 'MwSt €', 'Brutto €', 'Absetzbar %', 'Summe', 'Einnahmen €');
+            $excelData[1] = array('', '', '', '', '', '', '', '', $SumIncome);
+        } else {
+            $excelData[0] = array('KontoNr', 'Bezeichnung', 'Brutto €', 'Absetzbar %', 'Summe', 'Einnahmen €');
+            $excelData[1] = array('', '', '', '', '', $SumIncome);
+        }
 
         $sql = "SELECT Konten.KontoNr, Konten.Bezeichnung, Sum(Ausgaben.Brutto) AS SummeBrutto, Ausgaben.MwSt, Konten.ProzentAbsetzbar";
         $sql .= " FROM Ausgaben INNER JOIN Konten ON Ausgaben.KontoId = Konten.id";
-        $sql .= " WHERE (((Ausgaben.Datum)>=" . strtotime('01.01.' . $Bilanzjahr) . ") AND ((Ausgaben.Datum)<=" . strtotime('31.12.' . $Bilanzjahr) . "))";
+        $sql .= " WHERE (((Ausgaben.Datum)>= " . $BalanceFrom . ") AND ((Ausgaben.Datum)< " . $bis . "))";
         $sql .= " GROUP BY Konten.KontoNr, Konten.Bezeichnung, Ausgaben.MwSt, Konten.ProzentAbsetzbar";
 
         $i = 2;
-        $sumNetto = 0;
-        $sumBrutto = 0;
-        $sumAusgaben = 0;
-        $sumAusgabenNetto = 0;
-        $sumMwSt = 0;
+        $sumNetto = 0.00;
+        $sumBrutto = 0.00;
+        $sumAusgaben = 0.00;
+        $sumAusgabenNetto = 0.00;
+        $sumMwSt = 0.00;
         $query = mysqli_query($this->DBLink, $sql);
         if (!$query) {
             echo mysqli_error($this->DBLink);
@@ -367,31 +407,47 @@ class expense
                 $ausgabenNetto = $datarow['ProzentAbsetzbar'] / 100 * $netto;
                 $sumAusgabenNetto = $sumAusgabenNetto + $ausgabenNetto;
                 $sumAusgaben = $sumAusgaben + $ausgaben;
-                $excelData[$i++] = array(
+                if ($vab) $excelData[$i++] = array(
                     $datarow['KontoNr'],
                     $datarow['Bezeichnung'],
-                    number_format($netto, 2, ',', '.'),
+                    number_format($netto, 2),
                     $datarow['MwSt'],
-                    number_format($mwst, 2, ',', '.'),
-                    number_format($datarow['SummeBrutto'], 2, ',', '.'),
+                    number_format($mwst, 2),
                     $datarow['ProzentAbsetzbar'],
-                    number_format($ausgabenNetto, 2, ',', '.'),
-                    number_format($ausgaben, 2, ',', '.'),
-                    '',
+                    number_format($ausgabenNetto, 2),
+                    number_format($ausgaben, 2),
+                    ''
+                );
+                else $excelData[$i++] = array(
+                    $datarow['KontoNr'],
+                    $datarow['Bezeichnung'],
+                    number_format($datarow['SummeBrutto'], 2),
+                    $datarow['ProzentAbsetzbar'],
+                    number_format($ausgaben, 2),
+                    ''
                 );
             }
         }
-        $excelData[$i++] = array(
+        if ($vab) $excelData[$i++] = array(
             '', 
             '', 
-            number_format($sumNetto, 2, ',', '.'), 
+            number_format($sumNetto, 2), 
             '', 
-            number_format($sumMwSt, 2, ',', '.'), 
-            number_format($sumBrutto, 2, ',', '.'), 
+            number_format($sumMwSt, 2), 
+            number_format($sumBrutto, 2), 
             '', 
-            number_format($sumAusgabenNetto, 2, ',', '.'),
-            number_format($sumAusgaben, 2, ',', '.'),
+            number_format($sumAusgabenNetto, 2),
+            number_format($sumAusgaben, 2),
             '');
+        else $excelData[$i++] = array(
+            '', 
+            '', 
+            number_format($sumBrutto, 2), 
+            '', 
+            number_format($sumAusgaben, 2),
+            number_format($SumIncome - $sumAusgaben, 2)
+        );
+
         return $excelData;
     }
 }

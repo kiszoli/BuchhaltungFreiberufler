@@ -2,15 +2,16 @@
 ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 
-require_once("includes/c-expense.php");
-include("includes/simplexlsxgen/SimpleXLSXGen.php");
-
 session_start();
-if (isset($_GET['logout'])) $_SESSION['userId'] = 0;
+if (isset($_GET['logout'])) {
+	session_gc();
+	session_destroy();
+	header('Location: login.php');
+}
 if (!isset($_SESSION['userId']) || $_SESSION['userId'] < 1) header('Location: login.php');
 
-if (!isset($_SESSION['bilanzjahr'])) $_SESSION['bilanzjahr'] = date("Y");
-if (isset($_GET['bilanzdelta'])) $_SESSION['bilanzjahr'] = $_SESSION['bilanzjahr'] + $_GET['bilanzdelta'];
+require_once("includes/c-expense.php");
+include("includes/simplexlsxgen/SimpleXLSXGen.php");
 
 $Ausgaben = new expense();
 $updateId = 0;
@@ -18,7 +19,7 @@ if (isset($_GET['update'])) $updateId = $_GET['update'];
 if (isset($_GET['delete'])) $Ausgaben->Delete($_GET['delete']);
 if (isset($_POST['save'])) $Ausgaben->Save($_POST['userdata']);
 if (isset($_GET['export'])) {
-	$myData = $Ausgaben->GetExportList($_SESSION['bilanzjahr']);
+	$myData = $Ausgaben->GetExportList($_SESSION['von'], $_SESSION['bis']);
 
 	$xlsx = Shuchkin\SimpleXLSXGen::fromArray($myData);
 	$xlsx->downloadAs('ausgaben.xlsx'); // or $xlsx_content = (string) $xlsx or saveAs('books.xlsx')
@@ -37,9 +38,6 @@ if (isset($_GET['export'])) {
 <body>
 	<div id="menu">
 		<div class="logo"><img src="images/logo_tn.png"></div>
-		<div class="bilanzjahr">
-			<?php echo '<a href="' . $_SERVER['PHP_SELF'] . '?bilanzdelta=-1"><img src="images/arrow-left.png"></a>' . $_SESSION['bilanzjahr'] . '<a href="' . $_SERVER['PHP_SELF'] . '?bilanzdelta=+1"><img src="images/arrow-right.png"></a>'; ?>
-		</div>
 		<div class="navigation">
 			<a href="index.php">EÜR</a>
 			<a href="rechnungen.php"> | Einnahmen</a>
@@ -54,7 +52,7 @@ if (isset($_GET['export'])) {
 	<div class="clearfix"></div>
 	<div id="wrapper">
 		<h1>Ausgaben</h1>
-		<?php echo $Ausgaben->GetExpensesList($_SESSION['bilanzjahr'], $updateId); ?>
+		<?php echo $Ausgaben->GetExpensesList($_SESSION['von'], $_SESSION['bis'], $updateId); ?>
 		<p><a href="ausgaben.php?export">Excel Export</a></p>
 	</div>
 	<div class="clearfix"></div>

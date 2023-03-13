@@ -9,17 +9,16 @@ Funktionen
 - Kundenadressen verwalten
 - Eine einfache jährliche EÜR erstellen
 - Export der Einnahmen / Ausgaben / EÜR als Excel-Datei
-
-Geplant ist
-- EÜR pro Monat, Quartal, Jahr
+- EÜR monatlich von - bis
 
 Installation
 1. Alle Dateien in ein Verzeichnis kopieren (Webspace mit mindestens 100MB freiem Speicherplatz, PHP 7, MySQL)
-2. Den Ordner rechnungen beschreibbar machen (770)
+2. Den Ordner /rechnungen erstellen und beschreibbar machen (770)
 3. Datenbank anlegen
-4. Zugangsdaten für die Datenbank in die Datei dbconfig.php eintragen
+4. /includes/dbconfig-sample.php in /includes/dbconfig.php umbenennen und Zugangsdaten für die Datenbank eintragen
 5. index.php mit dem Browser aufrufen
 6. Benutzername und Passwort eingeben, merken und Login anklicken
+7. Die Dateien /images/logo.png und /images/logo_tn.png mit dem eigenen Logo ersetzen
 Wichtig!!
 Der Benutzername und das Passwort das beim ersten Aufruf eingegeben wird ist für spätere Anmeldungen notwendig. Wählt weise!!
 
@@ -27,3 +26,5 @@ Der Benutzername und das Passwort das beim ersten Aufruf eingegeben wird ist fü
 - PDF https://github.com/tecnickcom/tc-lib-pdf
 - PHPMailer https://github.com/PHPMailer/PHPMailer
 - Excel Export https://github.com/shuchkin/simplexlsxgen
+
+Es wird keine Haftung für die Richtigkeit der Berechnungen oder sonstiger Fehler übernommen. Diese Anwendung ist nur eine Hilfestellung und ersetzt in keinem Fall den Steuerberater.

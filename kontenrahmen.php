@@ -2,14 +2,15 @@
 ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 
-require_once("includes/c-account.php");
-
 session_start();
-if (isset($_GET['logout'])) $_SESSION['userId'] = 0;
+if (isset($_GET['logout'])) {
+	session_gc();
+	session_destroy();
+	header('Location: login.php');
+}
 if (!isset($_SESSION['userId']) || $_SESSION['userId'] < 1) header('Location: login.php');
 
-if (!isset($_SESSION['bilanzjahr'])) $_SESSION['bilanzjahr'] = date("Y");
-if (isset($_GET['bilanzdelta'])) $_SESSION['bilanzjahr'] = $_SESSION['bilanzjahr'] + $_GET['bilanzdelta'];
+require_once("includes/c-account.php");
 
 $Konten = new account();
 $KontenId = 0;
@@ -30,9 +31,6 @@ if (isset($_POST['save'])) $Konten->Save($_POST['userdata']);
 <body>
 	<div id="menu">
 		<div class="logo"><img src="images/logo_tn.png"></div>
-		<div class="bilanzjahr">
-			<?php echo '<a href="' . $_SERVER['PHP_SELF'] . '?bilanzdelta=-1"><img src="images/arrow-left.png"></a>' . $_SESSION['bilanzjahr'] . '<a href="' . $_SERVER['PHP_SELF'] . '?bilanzdelta=+1"><img src="images/arrow-right.png"></a>'; ?>
-		</div>
 		<div class="navigation">
 			<a href="index.php">EÜR</a>
 			<a href="rechnungen.php"> | Einnahmen</a>
