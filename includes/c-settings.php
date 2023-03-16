@@ -163,7 +163,7 @@ class settings
         $this->SetData($Userdata);
         $sql = "UPDATE Einstellungen SET ";
         if ($Userdata['Benutzername'] != "") $sql .= "Benutzername = '" . $Userdata['Benutzername'] . "', ";
-        if ($Userdata['Passwort'] != "") $sql .= "Passwort = '" . md5($Userdata['Passwort']) . "', ";
+        if ($Userdata['Passwort'] != "") $sql .= "Passwort = '" . password_hash($Userdata['Passwort'], PASSWORD_DEFAULT) . "', ";
 
         $sql .= "Firma = '" . $this->Firma . "', ";
         $sql .= "Ansprechpartner = '" . $this->Ansprechpartner . "', ";
@@ -223,14 +223,14 @@ class settings
             echo mysqli_error($this->DBLink);
         } else {
             $datarow = mysqli_fetch_array($query, MYSQLI_ASSOC);
-            if ($username == $datarow['Benutzername'] && md5($password) == $datarow['Passwort']) return $datarow['id'];
+            if ($username == $datarow['Benutzername'] && password_verify($password, $datarow['Passwort'])) return $datarow['id'];
             if ($datarow['Benutzername'] == '' && $datarow['Passwort'] == '') $NewUser = true;
         }
 
         if ($NewUser && strlen($username) > 2 && strlen($password) > 2) {
             $sql = "UPDATE Einstellungen SET ";
             $sql .= "Benutzername = '" . $username . "', ";
-            $sql .= "Passwort = '" . md5($password) . "'";
+            $sql .= "Passwort = '" . password_hash($password, PASSWORD_DEFAULT) . "'";
             $query = mysqli_query($this->DBLink, $sql);
             if (!$query) {
                 echo mysqli_error($this->DBLink);
