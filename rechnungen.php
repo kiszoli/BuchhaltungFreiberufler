@@ -48,7 +48,8 @@ if (isset($_POST['saveposition'])) $Income->SavePosition($_POST['userdata']);
 if (isset($_GET['deleteposition'])) $Income->DeletePosition($_GET['deleteposition']);
 $Kuerzel = 'R';
 if (isset($_GET['kuerzel'])) $Kuerzel = $_GET['kuerzel'];
-if (isset($_GET['mailinvoice'])) $Income->MailInvoice($_GET['mailinvoice']);
+$myMessage = '';
+if (isset($_GET['mailinvoice'])) $myMessage = $Income->MailInvoice($_GET['mailinvoice']);
 if (isset($_GET['export'])) {
 	$myData = $Income->GetExportList($_SESSION['von'], $_SESSION['bis']);
 
@@ -83,6 +84,7 @@ if (isset($_GET['export'])) {
 	<div class="clearfix"></div>
 	<div id="wrapper">
 		<h1>Einnahmen</h1>
+		<?php echo $myMessage; ?>
 		<?php echo $Income->GetContent($ContentNo, $_SESSION['von'], $_SESSION['bis'], $KundenId, $Kuerzel, $RechnungsId, $PositionId); ?>
 		<hr>
 		<a href="adressen.php">Rechnung / Gutschrift erstellen</a> | <a href="rechnungen.php?export">Excel Export</a>

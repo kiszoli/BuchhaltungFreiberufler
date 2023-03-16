@@ -450,7 +450,7 @@ class invoice
             $mail->Host       = $settings->MailHost;                    //Set the SMTP server to send through
             $mail->SMTPAuth   = $settings->MailSMTPAuth;                //Enable SMTP authentication
             $mail->Username   = $settings->MailUsername;                //SMTP username
-            $mail->Password   = $settings->MailPassword;                //SMTP password
+            $mail->Password   = $settings->GetMailPass();                //SMTP password
             switch ($settings->MailSMTPSecure) {
                 case 'STARTTLS':
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
@@ -487,9 +487,9 @@ class invoice
             $mail->CharSet = 'UTF-8';
 
             $mail->send();
-            echo 'Message has been sent';
+            return 'Message has been sent';
         } catch (Exception $e) {
-            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            return "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
     }
 }

@@ -1,5 +1,6 @@
 <?php
 require_once("dbconfig.php");
+include("c-crypt.php");
 
 class settings
 {
@@ -38,7 +39,6 @@ class settings
     var $MailHost = '';
     var $MailSMTPAuth = 1;
     var $MailUsername = '';
-    var $MailPassword = '';
     var $MailSMTPSecure = '';
     var $MailPort = 25;
 
@@ -98,7 +98,6 @@ class settings
                 $this->MailHost = $datarow['MailHost'];
                 $this->MailSMTPAuth = $datarow['MailSMTPAuth'];
                 $this->MailUsername = $datarow['MailUsername'];
-                $this->MailPassword = $datarow['MailPassword'];
                 $this->MailSMTPSecure = $datarow['MailSMTPSecure'];
                 $this->MailPort = $datarow['MailPort'];
             } else {
@@ -153,7 +152,6 @@ class settings
         if ($Userdata['MailSMTPAuth'] == 1) $this->MailSMTPAuth = 1;
         else $this->MailSMTPAuth = 0;
         $this->MailUsername = $Userdata['MailUsername'];
-        $this->MailPassword = $Userdata['MailPassword'];
         $this->MailSMTPSecure = $Userdata['MailSMTPSecure'];
         $this->MailPort = $Userdata['MailPort'];
     }
@@ -200,7 +198,10 @@ class settings
         $sql .= "MailHost = '"  . $this->MailHost . "', ";
         $sql .= "MailSMTPAuth = "  . $this->MailSMTPAuth . ", ";
         $sql .= "MailUsername = '"  . $this->MailUsername . "', ";
-        $sql .= "MailPassword = '"  . $this->MailPassword . "', ";
+        if (strlen($Userdata['MailPassword']) > 3){
+            $cryptor = new \Chirp\Cryptor(MYSQL_KENNWORT);
+            $sql .= "MailPassword = '"  . $cryptor->encrypt($Userdata['MailPassword']) . "', ";
+        }
         $sql .= "MailSMTPSecure = '"  . $this->MailSMTPSecure . "', ";
         $sql .= "MailPort = " . $this->MailPort;
 
@@ -239,5 +240,21 @@ class settings
             }
         }
         return 0;
+    }
+
+    function GetMailPass() {
+        $myPass = '';
+        $sql = "SELECT id, MailPassword FROM Einstellungen";
+        $query = mysqli_query($this->DBLink, $sql);
+
+        if (!$query) {
+            echo mysqli_error($this->DBLink);
+        } else {
+            $datarow = mysqli_fetch_array($query, MYSQLI_ASSOC);
+            $myPass = $datarow['MailPassword'];
+        }
+
+        $cryptor = new \Chirp\Cryptor(MYSQL_KENNWORT);
+        return $cryptor->decrypt($myPass);
     }
 }

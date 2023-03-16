@@ -11,7 +11,6 @@ if (isset($_GET['logout'])) {
 if (!isset($_SESSION['userId']) || $_SESSION['userId'] < 1) header('Location: login.php');
 
 require_once("includes/c-settings.php");
-
 $Settings = new settings();
 
 if (isset($_POST['save'])) $Settings->Save($_POST['userdata']);
@@ -115,7 +114,7 @@ if (isset($_POST['save'])) $Settings->Save($_POST['userdata']);
 				</div>
 				<div class="listentry">
 					<div class="halfcolumn"><input type="text" name="userdata[MailUsername]" placeholder="SMTP Benutzername" value="<?php echo $Settings->MailUsername; ?>" /></div>
-					<div class="halfcolumn"><input type="password" name="userdata[MailPassword]" placeholder="SMTP Passwort" value="<?php echo $Settings->MailPassword; ?>" /></div>
+					<div class="halfcolumn"><input type="password" name="userdata[MailPassword]" placeholder="SMTP Passwort" value="" /></div>
 				</div>
 				<div class="listentry">
 					<div class="fourthcolumn"><br>Verschlüsselung</div>
