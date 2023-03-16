@@ -419,19 +419,20 @@ class invoice
         if ($ShowFile) $pdf->Output($this->GetInvoiceFileName(), 'I');
     }
 
-    function GetMailContent($MailContent) {
-        $myContent = str_replace('{EmpfaengerAnsprechpartner}', $this->KunName, $MailContent);
-        $myContent = str_replace('{AbsenderAnsprechpartner}', $this->AbsName, $myContent);
-        $myContent = str_replace('{AbsenderStrasseNr}', $this->AbsStrasseNr, $myContent);
-        $myContent = str_replace('{AbsenderPlzOrt}', $this->AbsPLZOrt, $myContent);
-        $myContent = str_replace('{AbsenderInternet}', $this->AbsInternet, $myContent);
-        $myContent = str_replace('{AbsenderEmail}', $this->AbsEmail, $myContent);
-        $myContent = str_replace('{AbsenderTelefon}', $this->AbsTelefon, $myContent);
-        $myContent = str_replace('{AbsenderMobil}', $this->AbsMobil, $myContent);
-        $myContent = str_replace('{Bankname}', $this->BankName, $myContent);
-        $myContent = str_replace('{BIC}', $this->BIC, $myContent);
-        $myContent = str_replace('{IBAN}', $this->IBAN, $myContent);
-        return $myContent;
+    private function replaceTokens($RawText) {
+        $cleanText = str_replace('{EmpfaengerAnsprechpartner}', $this->KunName, $RawText);
+        $cleanText = str_replace('{AbsenderAnsprechpartner}', $this->AbsName, $cleanText);
+        $cleanText = str_replace('{AbsenderStrasseNr}', $this->AbsStrasseNr, $cleanText);
+        $cleanText = str_replace('{AbsenderPlzOrt}', $this->AbsPLZOrt, $cleanText);
+        $cleanText = str_replace('{AbsenderInternet}', $this->AbsInternet, $cleanText);
+        $cleanText = str_replace('{AbsenderEmail}', $this->AbsEmail, $cleanText);
+        $cleanText = str_replace('{AbsenderTelefon}', $this->AbsTelefon, $cleanText);
+        $cleanText = str_replace('{AbsenderMobil}', $this->AbsMobil, $cleanText);
+        $cleanText = str_replace('{Bankname}', $this->BankName, $cleanText);
+        $cleanText = str_replace('{BIC}', $this->BIC, $cleanText);
+        $cleanText = str_replace('{IBAN}', $this->IBAN, $cleanText);
+        $cleanText = str_replace('{RechnungsNr}', $this->RechnungsNr, $cleanText);
+        return $cleanText;
     }
 
     function MailInvoice($RechnungsId)
@@ -473,14 +474,14 @@ class invoice
             $mail->addBCC($settings->Email);
 
             //Attachments
-            //if (!file_exists('rechnungen/' . $this->GetInvoiceFileName())) $this->Print($RechnungsId, false);
+            if (!file_exists('rechnungen/' . $this->GetInvoiceFileName())) $this->Print($RechnungsId, false);
             if (file_exists('rechnungen/' . $this->GetInvoiceFileName()))
                 $mail->addAttachment('rechnungen/' . $this->GetInvoiceFileName());         //Add attachments
 
             //Content
             $mail->isHTML(true);                                  //Set email format to HTML
-            $mail->Subject = $settings->MailBetreff;
-            $myBody = $this->GetMailContent($settings->MailRechnung);
+            $mail->Subject = $this->replaceTokens($settings->MailBetreff);
+            $myBody = $this->replaceTokens($settings->MailRechnung);
             $mail->Body    = $myBody;
             $mail->AltBody = strip_tags($myBody);
 

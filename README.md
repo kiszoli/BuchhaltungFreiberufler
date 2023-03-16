@@ -22,6 +22,20 @@ Installation
 Wichtig!!
 Der Benutzername und das Passwort das beim ersten Aufruf eingegeben wird ist für spätere Anmeldungen notwendig. Wählt weise!!
 
+Platzhalter für Mail-Text und Betreff
+- {EmpfaengerAnsprechpartner}
+- {AbsenderAnsprechpartner}
+- {AbsenderStrasseNr}
+- {AbsenderPlzOrt}
+- {AbsenderInternet}
+- {AbsenderEmail}
+- {AbsenderTelefon}
+- {AbsenderMobil}
+- {Bankname}
+- {BIC}
+- {IBAN}
+- {RechnungsNr}
+
 3rd Party Libraries
 - PDF https://github.com/tecnickcom/tc-lib-pdf
 - PHPMailer https://github.com/PHPMailer/PHPMailer
